@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import {
   Button,
-  Container,
   Form,
-  Grid,
   Header,
+  Icon,
   Input,
   Label,
-  Loader,
-  Dimmer,
-  Icon,
-  Card,
   Modal
 } from 'semantic-ui-react'
 
@@ -21,17 +16,15 @@ const initialState = {
   _id: undefined
 }
 
-
 class Blog extends Component {
   constructor (props) {
-    console.log('Blog Modal: what is props.ui.data', props.ui.data)
     super(props)
     this.state = props.ui.data || initialState
     this.submitBlogForm = this.submitBlogForm.bind(this)
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.handleMessageChange = this.handleMessageChange.bind(this)
     this.validateTitle = this.validateTitle.bind(this)
-    this.validateMessage= this.validateMessage.bind(this)
+    this.validateMessage = this.validateMessage.bind(this)
     this.resetBlogForm = this.resetBlogForm.bind(this)
   }
 
@@ -52,14 +45,12 @@ class Blog extends Component {
     this.props.actions.toggleModal(false, 'blog')
   }
 
-
   validateTitle (value) {
     return /[a-z-A-Z]{2,}/.test(value)
   }
 
-  validateMessage (value){
-    // return /[\w]{2,}/.test(value)
-    return true
+  validateMessage (value) {
+    return /[\w]{2,}/.test(value)
   }
 
   submitBlogForm () {
@@ -71,34 +62,36 @@ class Blog extends Component {
     // console.log('what is validMessage', validMessage)
     // console.log('what is validSubmission', validSubmission)
     if (validSubmission) {
-      if(this.props.ui.data){
+      if (this.props.ui.data) {
         this.props.actions.updateBlog(this.state)
-      } else {
+      }
+      else {
         this.props.actions.createBlog(this.state)
       }
 
     }
     else {
       const titleError = !validTitle
-        ? 'Title must be at least two characters' : undefined
-      const messageError = !validMessage ? 'Message has to be at least 2 words' : undefined
+        ? 'Title must be at least two characters'
+        : undefined
+      const messageError = !validMessage
+        ? 'Message has to be at least 2 words'
+        : undefined
 
       this.setState({
         titleError,
-        messageError,
+        messageError
       })
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    console.log('blog component will receiving props')
-    console.log('what is nextProps', nextProps)
+  componentWillReceiveProps (nextProps) {
     // this.props.actions.getCsrfToken()
     this.setState(nextProps.ui.data)
   }
+
   render () {
     const buttonActionType = this.props.ui.data ? 'Update' : 'Create'
-    console.log('what is the state', this.state)
     return (
       <Modal
         open={this.props.ui.modalActive}
@@ -123,7 +116,7 @@ class Blog extends Component {
             </Form.Field>
 
             <Form.TextArea placeholder='Blog Details'
-                     onChange={this.handleMessageChange}
+                           onChange={this.handleMessageChange}
                            value={this.state.message}
                            required>
               {this.state.messageError

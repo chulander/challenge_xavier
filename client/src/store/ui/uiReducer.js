@@ -4,9 +4,8 @@ const initialState = {
   modalActive: false,
   sidebarActive: false,
   modalType: 'login',
-  dimmer: 'blurring',
   isFetching: false,
-  data:undefined
+  data: undefined
 }
 export default function ui (state = initialState, action) {
   // console.log('what is action.modalActive', action.modalActive)
@@ -18,7 +17,7 @@ export default function ui (state = initialState, action) {
           ? !state.modalActive
           : action.modalActive,
         modalType: action.modalType,
-        data:action.data
+        data: action.data
       })
     case types.TOGGLE_SIDEBAR:
       return Object.assign({}, state, {

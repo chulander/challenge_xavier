@@ -10,31 +10,10 @@ import Sidebar from '../common/sidebar/Sidebar'
 import News from '../routes/news/News'
 import Home from '../routes/home/Home'
 const FourOhFour = () => <h1>404</h1>
-import {Container} from 'semantic-ui-react'
 export default class App extends Component {
-  // componentDidMount () {
-  //   if (window) {
-  //     socket = io()
-  //     socket.emit('private', {
-  //       message: 'hi from client',
-  //     })
-  //   }
-  // }
-  constructor (props) {
-    super(props)
-  }
 
   componentDidMount () {
-    console.log('inside app.js COMPONENTDIDMOUTN')
 
-    // if (window) {
-    //   socket = io()
-    //   console.log('socket connected client side')
-    //   // socket.emit('private', {
-    //   //     msg: 'Thank you for your message'
-    //   //   }
-    //   // )
-    // }
     if (!this.props.isAuthenticated) {
       const token = localStorage.getItem('token')
       if(token){
@@ -44,15 +23,7 @@ export default class App extends Component {
     }
   }
 
-
-  componentWillReceiveProps(nextProps){
-    // hndles facebook oauth2 redirect hash
-    if(nextProps.history && nextProps.history.location && nextProps.history.location.hash === '#_=_'){
-      nextProps.history.push('/')
-    }
-  }
   render () {
-    // console.log('APP: what is this.props', this.props)
     return (
       <div>
         <Sidebar {...this.props}>
@@ -76,7 +47,3 @@ export default class App extends Component {
     )
   }
 }
-
-// if (module.hot) {
-//   module.hot.accept('./App.js')
-// }

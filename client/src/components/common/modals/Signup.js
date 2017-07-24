@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import {
   Button,
-  Container,
   Form,
-  Grid,
   Header,
+  Icon,
   Input,
   Label,
-  Loader,
-  Dimmer,
-  Icon,
   Modal
 } from 'semantic-ui-react'
 
@@ -113,58 +109,72 @@ class Signup extends Component {
     }
   }
 
-  componentWillReceiveProps(){
+  componentWillReceiveProps () {
     console.log('signup receiving props')
     // this.props.actions.getCsrfToken()
   }
+
   render () {
     return (
       <Modal
         open={this.props.ui.modalActive}
-        onClose={() => this.props.actions.toggleModal(false)}
+        onClose={this.resetSignupForm}
         basic
         size='small'
       >
-        <Header icon='add user' content='Sign up' />
+        <Header
+          icon='add user'
+          content='Sign up' />
         <Modal.Content>
           <Form>
             <Form.Field>
-              <Input placeholder='First Name'
-                     onChange={this.handleNameChange}
+              <Input
+                placeholder='First Name'
+                onChange={this.handleNameChange}
               />
 
               {this.state.firstNameError
-                ? <Label basic color='red'
-                         pointing>{this.state.firstNameError}</Label>
+                ? <Label
+                  basic color='red'
+                  pointing>{this.state.firstNameError}
+                </Label>
                 : undefined
               }
             </Form.Field>
 
             <Form.Field>
-              <Input placeholder='Email'
-                     onChange={this.handleEmailChange}
+              <Input
+                placeholder='Email'
+                onChange={this.handleEmailChange}
               />
               {this.state.emailError
-                ? <Label basic color='red'
-                         pointing>{this.state.emailError}</Label>
+                ? <Label
+                  basic color='red'
+                  pointing>{this.state.emailError}</Label>
                 : undefined
               }
             </Form.Field>
             <Form.Field>
-              <Input placeholder='Password'
-                     onChange={this.handlePasswordChange('password')}>
+              <Input
+                placeholder='Password'
+                onChange={this.handlePasswordChange('password')}
+              >
                 <input type='password' />
               </Input>
               {this.state.passwordError
-                ? <Label basic color='red'
-                         pointing>{this.state.passwordError}</Label>
+                ? <Label
+                  basic color='red'
+                  pointing>
+                  {this.state.passwordError}
+                </Label>
                 : undefined
               }
-
             </Form.Field>
             <Form.Field>
-              <Input placeholder='Confirm Password'
-                     onChange={this.handlePasswordChange('passwordConfirm')}>
+              <Input
+                placeholder='Confirm Password'
+                onChange={this.handlePasswordChange('passwordConfirm')}
+              >
                 <input type='password' />
               </Input>
               {this.state.passwordConfirmError
@@ -179,11 +189,14 @@ class Signup extends Component {
           <Button
             color='green'
             onClick={this.submitSignupForm}>
-            <Icon name='checkmark' /> Sign up
+            <Icon name='checkmark' />
+            Sign up
           </Button>
           <Button
             color='red'
-            onClick={this.resetSignupForm}>Cancel</Button>
+            onClick={this.resetSignupForm}>
+            Cancel
+          </Button>
         </Modal.Actions>
       </Modal>
     )

@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
 import moment from 'moment'
+import React, { Component } from 'react'
 
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   Input,
   Label,
   Modal,
-  Dropdown,
   Select
 } from 'semantic-ui-react'
 
@@ -42,7 +41,6 @@ const initialState = {
 
 class Quote extends Component {
   constructor (props) {
-    console.log('Quote Modal: what is props.ui.data', props.ui.data)
     super(props)
     this.state = props.ui.data || initialState
     this.submitQuoteForm = this.submitQuoteForm.bind(this)
@@ -96,17 +94,14 @@ class Quote extends Component {
     const validSubmission = validName && validLastName && validModel &&
       validCapacity &&
       validDate && validEmail && validPrice
-    console.log('validName', validName)
-    console.log('validLastName', validLastName)
-    console.log('validModel', validModel)
-    console.log('validCapacity', validCapacity)
-    console.log('validDate', validDate)
-    console.log('validPrice', validPrice)
-    console.log('typeof validPrice', validPrice)
-    console.log('validEmail', validEmail)
-    // console.log('what is validTitle', validTitle)
-    // console.log('what is validMessage', validMessage)
-    // console.log('what is validSubmission', validSubmission)
+    // console.log('validName', validName)
+    // console.log('validLastName', validLastName)
+    // console.log('validModel', validModel)
+    // console.log('validCapacity', validCapacity)
+    // console.log('validDate', validDate)
+    // console.log('validPrice', validPrice)
+    // console.log('typeof validPrice', validPrice)
+    // console.log('validEmail', validEmail)
     if (validSubmission) {
       const submissionObj = {
         owner_name: this.state.name,
@@ -116,14 +111,6 @@ class Quote extends Component {
         purchase_price: this.state.price,
         broker_email: this.state.email
       }
-      // const testObj = {
-      //   'owner_name': 'bryan sur',
-      //   'model': 'CessnaA-37 Dragonfly',
-      //   'seat_capacity': 5,
-      //   'manufactured_date': '2017-04-01T04:00:00.000Z',
-      //   'purchase_price': 5000,
-      //   'broker_email': 'shino.sk@gmail.com'
-      // }
 
       this.props.actions.createQuote(submissionObj)
 
@@ -156,15 +143,12 @@ class Quote extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('blog component will receiving props')
-    console.log('what is nextProps', nextProps)
     // this.props.actions.getCsrfToken()
     this.setState(nextProps.ui.data)
   }
 
   render () {
     const buttonActionType = this.props.ui.data ? 'Update' : 'Create'
-    console.log('what is the state', this.state)
     return (
       <Modal
         open={this.props.ui.modalActive}

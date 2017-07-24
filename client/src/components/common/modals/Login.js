@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import {
-  Button,
-  Header,
-  Icon,
-  Modal,
-  Form,
-  Checkbox,
-  Input
-} from 'semantic-ui-react'
+import { Button, Form, Header, Icon, Input, Modal } from 'semantic-ui-react'
+
+const initialState = {
+  email: '',
+  password: ''
+}
 
 class Login extends Component {
   constructor (props) {
@@ -20,6 +17,7 @@ class Login extends Component {
     this.validateEmail = this.validateEmail.bind(this)
     this.handleEmailChange = this.handleEmailChange.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
+    this.resetLoginForm = this.resetLoginForm.bind(this)
   }
 
   handleEmailChange (e, {value}) {
@@ -35,6 +33,11 @@ class Login extends Component {
     })
   }
 
+  resetLoginForm () {
+    this.setState(initialState)
+    this.props.actions.toggleModal(false, 'login')
+  }
+
   validateEmail (value) {
     // http://www.regextester.com/19
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
@@ -43,15 +46,11 @@ class Login extends Component {
 
   submitLoginRequest () {
     const validEmail = this.validateEmail(this.state.email)
-    if (!validEmail) {
-      this.setState({
+    !validEmail
+      ? this.setState({
         emailError: true
       })
-    }
-    else {
-      this.props.actions.loginUser(this.state, this.props.auth.csrfToken)
-    }
-
+      : this.props.actions.loginUser(this.state, this.props.auth.csrfToken)
   }
 
   render () {
@@ -59,7 +58,7 @@ class Login extends Component {
 
       <Modal
         open={this.props.ui.modalActive}
-        onClose={() => this.props.actions.toggleModal(false)}
+        onClose={this.resetLoginForm}
         basic
         size='small'
       >
@@ -97,7 +96,7 @@ class Login extends Component {
             <Icon name='checkmark' /> Login
           </Button>
           <Button color='red'
-                  onClick={() => this.props.actions.toggleModal(false, 'login')}
+                  onClick={this.resetLoginForm}
                   inverted>
             <Icon name='cancel' /> Cancel
           </Button>

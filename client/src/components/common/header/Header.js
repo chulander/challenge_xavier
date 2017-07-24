@@ -8,9 +8,7 @@ const routeMappings = {
   news: '/news'
 }
 const getActiveItemFromRoute = function (location) {
-  // console.log('what is location', location)
   const activeItem = Object.keys(routeMappings).reduce((cur, next) => {
-    // console.log('what is routeMappings[next]', routeMappings[next])
     return routeMappings[next] === location ? next : cur
   })
   return activeItem || 'home'
@@ -31,9 +29,7 @@ class HeaderContainer extends Component {
       this.props.history.push(routeMappings[name])
     }
     if (name === 'sidebar') {
-      console.log('inside sidebar', this.props)
       this.props.actions.toggleSidebar()
-      // console.log('typeof ', typeof this.props.toggleSidebar)
     }
 
   }
@@ -50,7 +46,6 @@ class HeaderContainer extends Component {
             Xavier, an online "quick quoting" system
           </Header.Subheader>
         </Header>
-        {/*<Menu pointing icon='labeled'>*/}
         <Menu pointing secondary>
           {this.props.isAuthenticated
             ? <Menu.Item name='sidebar'
@@ -78,7 +73,7 @@ class HeaderContainer extends Component {
                 onClick={() => this.props.actions.toggleModal(
                   !this.props.ui.modalActive, 'blog')}>
                 <Icon name='plus' />
-                Create News Post
+                New Blog Post
               </Menu.Item>
               : undefined
           }
@@ -92,7 +87,7 @@ class HeaderContainer extends Component {
                 onClick={() => this.props.actions.toggleModal(
                   !this.props.ui.modalActive, 'quote')}>
                 <Icon name='plus' />
-                Create New Quote
+                New Quote
               </Menu.Item>
               : undefined
           }

@@ -1,10 +1,11 @@
 import React from 'react'
 import { Dimmer, Loader } from 'semantic-ui-react'
-import Signup from './Signup'
 import Blog from './Blog'
-import Quote from './Quote'
 
 import Login from './Login'
+import Quote from './Quote'
+import Signup from './Signup'
+
 const modalMappings = {
   login: Login,
   signup: Signup,

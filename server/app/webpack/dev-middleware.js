@@ -49,7 +49,7 @@ function useWebpackMiddleware (app) {
     publicPath: webpackCompiler.options.output.publicPath,
     hot: true,
     historyApiFallback: true,
-    serverSideRender: true
+    // serverSideRender: true/**/
   }))
   app.use(webpackHotMiddleware(webpackCompiler, {
     log: console.log,

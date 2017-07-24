@@ -19,21 +19,13 @@ const clientSrcPath = path.join(projectRoot, 'client/src')
 const clientDistPath = path.join(projectRoot, 'client/dist')
 const babelConfig = require('../babel')
 module.exports = (env, target) => {
-  // console.log("what is babelConfig().presets", babelConfig().presets)
-  // console.log("what is require.resolve('babel-plugin-transform-runtime')", require.resolve('babel-plugin-transform-runtime'))
-  // console.log('what is env', env)
   const config = require(path.join(__dirname, '../environment'))[Object.keys(env)[0]]
 
-  // console.log('what is config.web.URI', config.web.URI)
 
-  // console.log('what is full url', config.getFullUrl());
   const GLOBALS = {
     'process.env': {
       'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'API_ROUTE': process.env.NODE_ENV === 'production'
-        // ? JSON.stringify(`${config.HTTP_PROTOCOL}://${config.URL}`)
-        ? JSON.stringify(config.web.URI)
-        : JSON.stringify(config.web.URI)
+      'API_ROUTE': JSON.stringify(config.web.URI)
     }
   }
 
