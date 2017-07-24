@@ -8,10 +8,6 @@
   },
   "scripts": {
     "start": "node ./server/index.js --env",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "flow-init": "node_modules/flow-bin/cli.js init",
-    "flow": "node_modules/flow-bin/cli.js",
-    "flowtyped-init": "node_modules/flow-typed/dist/cli.js install"
   },
   "repository": {
     "type": "git",
