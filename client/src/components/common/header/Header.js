@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
-import { Icon, Menu, Button, Input, Image, Header, Segment} from 'semantic-ui-react'
+import { Header, Icon, Menu } from 'semantic-ui-react'
+
 const routeMappings = {
   home: '/',
   blog: '/blog',
-  game: '/games',
-  user: '/players',
+  quote: '/quote',
   news: '/news'
 }
-const getActiveItemFromRoute = function(location){
+const getActiveItemFromRoute = function (location) {
   // console.log('what is location', location)
-  const activeItem = Object.keys(routeMappings).reduce((cur,next)=>{
+  const activeItem = Object.keys(routeMappings).reduce((cur, next) => {
     // console.log('what is routeMappings[next]', routeMappings[next])
-    return routeMappings[next]===location ? next : cur
+    return routeMappings[next] === location ? next : cur
   })
   return activeItem || 'home'
 }
+
 class HeaderContainer extends Component {
   constructor (props) {
     super(props)
@@ -59,21 +60,39 @@ class HeaderContainer extends Component {
             : ''
           }
 
-
-
-
+          <Menu.Item name='home' active={activeItem === 'home'}
+                     onClick={this.handleItemClick}>
+            <Icon name='home' />
+            Home
+          </Menu.Item>
           <Menu.Item name='news' active={activeItem === 'news'}
                      onClick={this.handleItemClick}>
             <Icon name='newspaper' />
             News
           </Menu.Item>
+          {
+            this.props.isAuthenticated
+              ? <Menu.Item
+                name='blog'
+                active={activeItem === 'blog'}
+                onClick={() => this.props.actions.toggleModal(
+                  !this.props.ui.modalActive, 'blog')}>
+                <Icon name='plus' />
+                Create News Post
+              </Menu.Item>
+              : undefined
+          }
 
           {
             this.props.isAuthenticated
-            ?  <Menu.Item name='blog' active={activeItem === 'blog'}
-                          onClick={()=>this.props.actions.toggleModal(!this.props.ui.modalActive,'blog')}>
+              ? <Menu.Item
+                name='quote'
+                active={activeItem === 'quote'}
+
+                onClick={() => this.props.actions.toggleModal(
+                  !this.props.ui.modalActive, 'quote')}>
                 <Icon name='plus' />
-                Create News Post
+                Create New Quote
               </Menu.Item>
               : undefined
           }
@@ -81,27 +100,31 @@ class HeaderContainer extends Component {
 
           <Menu.Menu position='right'>
             {this.props.isAuthenticated
-              ? <Menu.Item name='logout' active={activeItem === 'logout'}
-                           onClick={this.props.actions.logoutUser}>
-                {/*<Image avatar size="mini" src={this.props.photo} />*/}
-
+              ? <Menu.Item
+                name='logout'
+                active={activeItem === 'logout'}
+                onClick={this.props.actions.logoutUser}>
                 <Icon name='log out' />
                 Log Out
               </Menu.Item>
-              : <Menu.Item name='sign in' active={activeItem === 'sign in'}
-                           onClick={()=>this.props.actions.toggleModal(!this.props.ui.modalActive,'login')}>
+              : <Menu.Item
+                name='sign in'
+                active={activeItem === 'sign in'}
+                onClick={() => this.props.actions.toggleModal(
+                  !this.props.ui.modalActive, 'login')}>
                 <Icon name='sign in' />
                 Login
               </Menu.Item>
             }
             {
-            this.props.isAuthenticated
-              ? undefined
-              : <Menu.Item name='signup' active={activeItem === 'signup'}
-                           onClick={()=>this.props.actions.toggleModal(!this.props.ui.modalActive,'signup')}>
-                <Icon name='add user' />
-                Sign up
-              </Menu.Item>
+              this.props.isAuthenticated
+                ? undefined
+                : <Menu.Item name='signup' active={activeItem === 'signup'}
+                             onClick={() => this.props.actions.toggleModal(
+                               !this.props.ui.modalActive, 'signup')}>
+                  <Icon name='add user' />
+                  Sign up
+                </Menu.Item>
 
             }
 

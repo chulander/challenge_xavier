@@ -8,7 +8,8 @@ const _ = require('lodash')
 const schema = new mongoose.Schema({
   email: {
     type: String,
-    unique:true
+    unique: true,
+    validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
   },
   firstName: String,
   password: {
@@ -17,11 +18,11 @@ const schema = new mongoose.Schema({
   salt: {
     type: String
   },
-  createdByUserAgent:{
+  createdByUserAgent: {
     type: String
   },
-  createdByIp:{
-    type:String
+  createdByIp: {
+    type: String
   }
 }, {
   timestamps: true
@@ -60,10 +61,10 @@ schema.statics.encryptPassword = encryptPassword
 schema.method('correctPassword', function (candidatePassword) {
   return encryptPassword(candidatePassword, this.salt) === this.password
 })
-schema.method('getFullName', function(){
+schema.method('getFullName', function () {
   return `${this.firstName} ${this.lastName}`
 })
-schema.method('getPhoto', function(){
+schema.method('getPhoto', function () {
   return this.facebook.photo
 })
 mongoose.model('User', schema)

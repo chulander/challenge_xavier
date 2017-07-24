@@ -76,6 +76,7 @@
     "interpolate-html-plugin": "^2.0.0",
     "node-sass": "^4.5.3",
     "postcss-loader": "^2.0.6",
+    "prop-types": "^15.5.10",
     "react-dev-utils": "^3.0.2",
     "react-hot-loader": "^3.0.0-beta.7",
     "react-redux-toastr": "^7.0.0",

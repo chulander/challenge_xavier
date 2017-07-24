@@ -6,27 +6,131 @@ global localStorage:false
 import * as types from './authActionTypes'
 import * as uiActions from '../ui/uiActions'
 
-export function signUpRequest () {
+function signUpRequest () {
   return {
     type: types.SIGNUP_REQUEST,
     isAuthenticated: false
   }
 }
 
-export function signUpSuccess () {
+function loginRequest () {
+  return {
+    type: types.LOGIN_REQUEST,
+    isAuthenticated: false,
+  }
+}
+
+function logoutRequest () {
+  return {
+    type: types.LOGOUT_REQUEST,
+    isAuthenticated: true
+  }
+}
+
+function loginTokenRequest(token){
+  return {
+    type: types.LOGIN_TOKEN_REQUEST,
+    token
+  }
+}
+
+function csrfRequest () {
+  return {
+    type: types.CSRF_REQUEST,
+  }
+}
+
+
+
+function signupSuccess () {
   return {
     type: types.SIGNUP_SUCCESSS,
     isAuthenticated: true
   }
 }
 
-export function signUpError (message) {
+function loginSuccess (data) {
+  console.log('what is data:loginSuccess', data)
+  return {
+    type: types.LOGIN_SUCCESS,
+    isAuthenticated: true,
+    user: data.firstName,
+    token: data.token
+  }
+}
+
+function logoutSuccess () {
+  return {
+    type: types.LOGOUT_SUCCESS,
+    isAuthenticated: false,
+    user: undefined,
+    token: undefined
+  }
+}
+
+
+function loginTokenSuccess (data) {
+  console.log('what is data:loginSuccess', data)
+  return {
+    type: types.LOGIN_TOKEN_SUCCESS,
+    isAuthenticated: true,
+    user: data.firstName,
+    token: data.token
+  }
+}
+
+function csrfSuccess (token) {
+  return {
+    type: types.CSRF_SUCCESS,
+    token
+  }
+}
+
+
+function signupFailure (message) {
   return {
     type: types.SIGNUP_FAILURE,
     isAuthenticated: false,
-    signUpError: message
+    signupFailure: message
   }
 }
+
+function loginFailure (message) {
+  return {
+    type: types.LOGIN_FAILURE,
+    isAuthenticated: false,
+    message
+  }
+}
+
+function loginTokenFailure (message) {
+  return {
+    type: types.LOGIN_TOKEN_FAILURE,
+    isAuthenticated: false,
+    message
+  }
+}
+
+function csrfError (message) {
+  return {
+    type: types.CSRF_SUCCESS,
+    isFetching: false,
+    message
+  }
+}
+
+
+
+// Logs the user out
+export function logoutUser () {
+  console.log('attempting to log out')
+  return dispatch => {
+    dispatch(logoutRequest())
+    dispatch(removeJWT())
+    dispatch(logoutSuccess())
+  }
+}
+
 
 export function signup (credentials, csrfToken) {
   console.log('inside signup: what is credentials', credentials)
@@ -34,14 +138,11 @@ export function signup (credentials, csrfToken) {
 
   const config = {
     method: 'POST',
-    // headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     headers: {
       'Content-Type': 'application/json',
       'csrf-token': csrfToken
     },
     body: JSON.stringify(credentials)
-
-    // body: `username=${creds.username}&password=${creds.password}`
   }
   return dispatch => {
     dispatch(signUpRequest())
@@ -52,72 +153,15 @@ export function signup (credentials, csrfToken) {
       return res.json()
     }).then(data => {
       console.log('what is sign json data', data)
-      dispatch(signUpSuccess())
+      dispatch(signupSuccess())
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(uiActions.toggleModal(false,'signup'))
       dispatch(addJWT(data.token))
     }).catch(err => {
       console.log('what is signup catch err', err)
-      dispatch(signUpError(data.err))
+      dispatch(signupFailure(data.err))
       dispatch(uiActions.toggleIsFetching(false))
     })
-  }
-}
-
-function requestLogin () {
-  return {
-    type: types.LOGIN_REQUEST,
-    isAuthenticated: false,
-  }
-}
-
-function receiveLogin (data) {
-  console.log('what is data:receiveLogin', data)
-  return {
-    type: types.LOGIN_SUCCESS,
-    isAuthenticated: true,
-    user: data.firstName,
-    token: data.token
-  }
-}
-
-function loginError (message) {
-  return {
-    type: types.LOGIN_FAILURE,
-    isAuthenticated: false,
-    message
-  }
-}
-
-function requestLogout () {
-  return {
-    type: types.LOGOUT_REQUEST,
-    isAuthenticated: true
-  }
-}
-
-function receiveLogout () {
-  return {
-    type: types.LOGOUT_SUCCESS,
-    isAuthenticated: false
-  }
-}
-
-// Logs the user out
-export function logoutUser () {
-  console.log('attempting to log out')
-  return dispatch => {
-    dispatch(requestLogout())
-    dispatch(removeJWT())
-    dispatch(receiveLogout())
-  }
-}
-
-export function loginToken (data) {
-  return {
-    type: types.LOGIN_SUCCESS,
-    isAuthenticated: true,
-    token: data.token
   }
 }
 
@@ -136,8 +180,8 @@ export function loginUser (credentials, csrfToken) {
   }
 
   return dispatch => {
-    // We dispatch requestLogin to kickoff the call to the API
-    dispatch(requestLogin(credentials))
+    // We dispatch loginRequest to kickoff the call to the API
+    dispatch(loginRequest(credentials))
     dispatch(uiActions.toggleIsFetching(true))
 
     return fetch('/api/auth/login', config).then(res => {
@@ -151,7 +195,7 @@ export function loginUser (credentials, csrfToken) {
         // If there was a problem, we want to
         // dispatch the error condition
         console.log('login error')
-        dispatch(loginError(data.message))
+        dispatch(loginFailure(data.message))
         dispatch(uiActions.toggleIsFetching(false))
         return Promise.reject(data.message)
       }
@@ -159,7 +203,7 @@ export function loginUser (credentials, csrfToken) {
         // If login was successful, set the token in local storage
         localStorage.setItem('token', data.token)
         // Dispatch the success action
-        dispatch(receiveLogin(data))
+        dispatch(loginSuccess(data))
         dispatch(uiActions.toggleIsFetching(false))
         dispatch(addJWT(data.token))
         dispatch(uiActions.toggleModal(false,'login'))
@@ -168,29 +212,34 @@ export function loginUser (credentials, csrfToken) {
   }
 }
 
-export function csrfRequest () {
-  return {
-    type: types.CSRF_REQUEST,
-    isFetching: true
+export function loginToken(token){
+  let config = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+    }
   }
-}
-
-function csrfSuccess (csrfToken) {
-  return {
-    type: types.CSRF_SUCCESS,
-    isFetching: false,
-    csrfToken
+  return dispatch=>{
+    dispatch(loginTokenRequest())
+    fetch('/api/auth', config)
+    .then(res=>{
+      console.log('TOKEN LOGIN WHAT IS RES', res)
+      if(res.ok){
+        return res.json()
+      } else {
+        return Promise.reject(new Error(res.statusText))
+      }
+    })
+    .then(data=>{
+      dispatch(loginTokenSuccess(data))
+    })
+    .catch(err=>{
+      dispatch(loginTokenFailure(err.message))
+    })
   }
-}
 
-function csrfError (csrfError) {
-  return {
-    type: types.CSRF_SUCCESS,
-    isFetching: false,
-    csrfError
-  }
 }
-
 export function getCsrfToken () {
   let config = {
     method: 'GET'
@@ -215,11 +264,12 @@ export function getCsrfToken () {
   }
 }
 
+
 export function addJWT (token) {
   localStorage.setItem('token', token)
   return {
     type: types.JWT_ADD,
-    jwtToken: token
+    token: token
   }
 }
 
@@ -227,7 +277,7 @@ export function removeJWT () {
   localStorage.removeItem('token')
   return {
     type: types.JWT_REMOVE,
-    jwtToken: false
+    token: false
   }
 }
 
@@ -235,7 +285,7 @@ export function getJWT () {
   const token = localStorage.getItem('token')
   return {
     type: types.JWT_GET,
-    jwtToken: token
+    token: token
   }
 
 }

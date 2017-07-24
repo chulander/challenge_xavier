@@ -40,7 +40,7 @@ module.exports = function (app) {
     })
   })
   authRouter.post('/signup', function (req, res) {
-    console.log('what is req.body', req.body)
+    // console.log('what is req.body', req.body)
     const user = new User(Object.assign({},
       req.body, {
         createdByIp: req.clientIp,
@@ -61,16 +61,19 @@ module.exports = function (app) {
     })
   })
 
-  authRouter.get('/', function(req, res){
-    console.log('what is req.headers', req.headers)
-    const validToken = utility.security.verifyToken(req.headers.authorization)
-    if(validToken){
-      res.status(200)
-      res.end()
-    } else {
-      res.status(401)
-      res.end()
-    }
+  authRouter.get('/', passport.authenticate('jwt', {session: false}), function(req, res){
+    console.log('inside api/auth')
+    console.log('what is req.user here', req.user)
+    res.json(req.user)
+    // // console.log('what is req.headers', req.headers)
+    // const validToken = utility.security.verifyToken(req.headers.authorization)
+    // if(validToken){
+    //   res.status(200)
+    //   res.end()
+    // } else {
+    //   res.status(401)
+    //   res.end()
+    // }
   })
 
     return authRouter

@@ -148,7 +148,8 @@ class News extends Component {
 
           </Grid.Column>
         </Grid.Row>
-        <Container fluid>
+        <Grid.Row>
+        <Container >
           <Header as='h2'>News</Header>
           {
             !this.state.blogs.length
@@ -167,6 +168,7 @@ class News extends Component {
           }
 
         </Container>
+        </Grid.Row>
         <Grid.Row columns={1}>
           <Grid.Column>
 

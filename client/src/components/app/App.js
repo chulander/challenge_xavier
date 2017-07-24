@@ -8,6 +8,7 @@ import Header from '../common/header/Header'
 import Modals from '../common/modals/Modals'
 import Sidebar from '../common/sidebar/Sidebar'
 import News from '../routes/news/News'
+import Home from '../routes/home/Home'
 const FourOhFour = () => <h1>404</h1>
 import {Container} from 'semantic-ui-react'
 export default class App extends Component {
@@ -57,7 +58,7 @@ export default class App extends Component {
         <Sidebar {...this.props}>
           <Header {...this.props} />
           <Switch>
-            <Route exact path='/' render={() => <Redirect to='/news'/>} />
+            <Route exact path='/' render={() => <Home {...this.props} />} />
             <Route path='/news' render={() => <News {...this.props} />} />
             <Route component={FourOhFour} />
           </Switch>
