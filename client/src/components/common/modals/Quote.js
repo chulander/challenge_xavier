@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import moment from 'moment'
+
 import {
   Button,
   Form,
@@ -7,20 +9,34 @@ import {
   Input,
   Label,
   Modal,
-  Dropdown
+  Dropdown,
+  Select
 } from 'semantic-ui-react'
 
 const initialState = {
-  owner_name: '',
-  model: [
-    'Gulfstream G650',
-    'CessnaA-37 Dragonfly',
-    'Cessna Citation Encore'
+  name: '',
+  models: [
+    {
+      key: 'Gulfstream G650',
+      value: 'Gulfstream G650',
+      text: 'Gulfstream G650'
+    },
+    {
+      key: 'CessnaA-37 Dragonfly',
+      value: 'CessnaA-37 Dragonfly',
+      text: 'CessnaA-37 Dragonfly'
+    },
+    {
+      key: 'Cessna Citation Encore',
+      value: 'Cessna Citation Encore',
+      text: 'Cessna Citation Encore'
+    }
   ],
-  seat_capacity: '',
-  manufactured_date: '',
-  purchase_price: '',
-  broker_email: '',
+  model: '',
+  capacity: '',
+  date: '',
+  price: '',
+  email: ''
 }
 
 class Quote extends Component {
@@ -29,22 +45,17 @@ class Quote extends Component {
     super(props)
     this.state = props.ui.data || initialState
     this.submitQuoteForm = this.submitQuoteForm.bind(this)
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleMessageChange = this.handleMessageChange.bind(this)
-    this.validateTitle = this.validateTitle.bind(this)
-    this.validateMessage = this.validateMessage.bind(this)
+    this.handleValueChange = this.handleValueChange.bind(this)
+    this.validateName = this.validateName.bind(this)
+    this.validateEmail = this.validateEmail.bind(this)
     this.resetQuoteForm = this.resetQuoteForm.bind(this)
   }
 
-  handleNameChange (e, {value}) {
+  handleValueChange (e, {value, name}) {
     this.setState({
-      name: value
-    })
-  }
-
-  handleMessageChange (e, {value}) {
-    this.setState({
-      message: value
+      [name]: name === 'capacity'
+        ? Number.parseInt(value)
+        : value
     })
   }
 
@@ -53,42 +64,92 @@ class Quote extends Component {
     this.props.actions.toggleModal(false, 'blog')
   }
 
-  validateTitle (value) {
+  validateName (value) {
     return /[a-z-A-Z]{2,}/.test(value)
   }
 
-  validateMessage (value) {
-    // return /[\w]{2,}/.test(value)
-    return true
+  validateEmail (value) {
+    // http://www.regextester.com/19
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+      value)
   }
 
   submitQuoteForm () {
     console.log('clicking submitQuoteForm')
-    const validTitle = this.validateTitle(this.state.name)
-    const validMessage = this.validateTitle(this.state.message)
-    const validSubmission = validTitle && validMessage
+    const validFirstName = this.validateName(this.state.firstName)
+    const validSecondName = this.validateName(this.state.secondName)
+    const validModel = initialState.models.some(
+      model => model.key === this.state.model)
+    const validCapacity = Number.isInteger(this.state.capacity)
+    const validDate = moment(this.state.date).isValid()
+    const validPrice = Number.parseFloat(this.state.price).toFixed(2)
+    const validEmail = this.validateEmail(this.state.email)
+
+    const validSubmission = validFirstName && validSecondName && validModel &&
+      validCapacity &&
+      validDate && validPrice && validEmail
+    console.log('validFirstName', validFirstName)
+    console.log('validSecondName', validSecondName)
+    console.log('validModel', validModel)
+    console.log('validCapacity', validCapacity)
+    console.log('validDate', validDate)
+    console.log('validPrice', validPrice)
+    console.log('validEmail', validEmail)
     // console.log('what is validTitle', validTitle)
     // console.log('what is validMessage', validMessage)
     // console.log('what is validSubmission', validSubmission)
-    if (validSubmission) {
-      if (this.props.ui.data) {
-        this.props.actions.updateQuote(this.state)
+    if (validSubmission || true) {
+      const submissionObj = {
+        owner_name: `${this.state.firstName} ${this.state.lastName}`,
+        model: this.state.model,
+        seat_capacity: this.state.capacity,
+        manufactured_date: moment(this.state.date).toISOString(),
+        purchase_price: this.state.price,
+        broker_email: this.state.email
       }
-      else {
-        this.props.actions.createQuote(this.state)
+      const testObj = {
+        'owner_name': 'test test',
+        'model': 'CessnaA-37 Dragonfly',
+        'seat_capacity': 5,
+        'manufactured_date': '2017-04-01T04:00:00.000Z',
+        'purchase_price': '5000',
+        'broker_email': 'test@mail.com'
       }
+      const config = {
+        method: 'POST',
+        headers:
+          {
+            'x-api-key': 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p',
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify(testObj)
+      }
+      fetch(
+        'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge',
+        config).then(res => {
+        console.log('node-fetch: what is res', res)
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          return Promise.reject(new Error(res.errors))
+        }
+      }).then(data => {
+        console.log('what is data', data)
+
+      }).catch(err => {
+        console.log('frontend err', err)
+      })
+      // this.props.actions.createQuote(submissionObj)
 
     }
     else {
-      const nameError = !validTitle
+      const nameError = !validFirstName
         ? 'Title must be at least two characters' : undefined
-      const messageError = !validMessage
-        ? 'Message has to be at least 2 words'
-        : undefined
 
       this.setState({
-        nameError,
-        messageError
+        nameError
+
       })
     }
   }
@@ -113,32 +174,105 @@ class Quote extends Component {
         <Header icon='add user' content={`${buttonActionType} Quote Post`} />
         <Modal.Content>
           <Form>
-            <Form.Field required>
-              <Input placeholder='Owner Name'
-                     onChange={this.handleNameChange}
-                     value={this.state.name}
-              />
+            <Form.Group widths='equal'>
+              <Form.Field required>
+                <Input placeholder='Owner First Name'
+                       name='firstName'
+                       onChange={this.handleValueChange}
+                       value={this.state.firstName}
+                />
 
-              {this.state.nameError
-                ? <Label basic color='red'
-                         pointing>{this.state.nameError}</Label>
-                : undefined
-              }
-            </Form.Field>
+                {this.state.firstNameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.firstNameError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+              <Form.Field required>
+                <Input placeholder='Owner Last Name'
+                       name='lastName'
+                       onChange={this.handleValueChange}
+                       value={this.state.lastName}
+                />
 
-            <Form.Field required>
-              <Dropdown placeholder='Select Friend' fluid selection options={this.state.model} />
-            </Form.Field>
-            <Form.TextArea placeholder='Quote Details'
-                           onChange={this.handleMessageChange}
-                           value={this.state.message}
-                           required>
-              {this.state.messageError
-                ? <Label basic color='red'
-                         pointing>{this.state.messageError}</Label>
-                : undefined
-              }
-            </Form.TextArea>
+                {this.state.lastNameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.lastNameError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+              <Form.Field required>
+                <Input placeholder='Broker Email'
+                       name='email'
+                       onChange={this.handleValueChange}
+                       value={this.state.email}
+                />
+
+                {this.state.nameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.emailError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+            </Form.Group>
+            <Form.Group widths='equal'>
+              <Form.Field required>
+                <Select placeholder='Select Model'
+                        options={this.state.models}
+                        name='model'
+                        onChange={this.handleValueChange}
+                        fluid
+                        selection
+                />
+              </Form.Field>
+              <Form.Field required>
+                <Input placeholder='Manufactured Date'
+                       name='date'
+                       onChange={this.handleValueChange}
+                       value={this.state.date}
+                />
+
+                {this.state.nameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.dateError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+            </Form.Group>
+
+            <Form.Group widths='equal'>
+              <Form.Field required>
+                <Input placeholder='Seat Capacity'
+                       name='capacity'
+                       onChange={this.handleValueChange}
+                       value={this.state.capacity}
+                />
+
+                {this.state.nameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.capacityError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+
+
+              <Form.Field required>
+                <Input placeholder='Purchase Price'
+                       name='price'
+                       onChange={this.handleValueChange}
+                       value={this.state.price}
+                />
+
+                {this.state.nameError
+                  ? <Label basic color='red'
+                           pointing>{this.state.priceError}</Label>
+                  : undefined
+                }
+              </Form.Field>
+
+            </Form.Group>
+
+
           </Form>
         </Modal.Content>
         <Modal.Actions>

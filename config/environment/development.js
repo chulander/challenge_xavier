@@ -33,6 +33,9 @@ const options = {
   GENERAL:{
     secret: 'anything goes'
   },
+  QUOTE:{
+    apiKey:'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p'
+  },
   LOGGING: true,
 }
 module.exports = options

@@ -6,10 +6,11 @@ import { bindActionCreators } from 'redux'
 import * as authActions from '../../store/auth/authActions'
 import * as blogActions from '../../store/blog/blogActions'
 import * as uiActions from '../../store/ui/uiActions'
+import * as quoteActions from '../../store/quote/quoteActions'
 import App from './App'
 // import * as dialogActions from '../common/dialog/dialogActions'
 
-const action = Object.assign({}, authActions, uiActions, blogActions, toastrActions)
+const action = Object.assign({}, authActions, uiActions, blogActions, quoteActions, toastrActions)
 function mapStateToProps (state, ownProps) {
   // console.log('AppContainer: what is state inside mapstatetoprops', state)
   return {
