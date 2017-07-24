@@ -5,6 +5,7 @@ global localStorage:false
 
 import * as types from './authActionTypes'
 import * as uiActions from '../ui/uiActions'
+import { actions as toastrActions } from 'react-redux-toastr'
 
 function signUpRequest () {
   return {
@@ -16,7 +17,7 @@ function signUpRequest () {
 function loginRequest () {
   return {
     type: types.LOGIN_REQUEST,
-    isAuthenticated: false,
+    isAuthenticated: false
   }
 }
 
@@ -27,7 +28,7 @@ function logoutRequest () {
   }
 }
 
-function loginTokenRequest(token){
+function loginTokenRequest (token) {
   return {
     type: types.LOGIN_TOKEN_REQUEST,
     token
@@ -36,11 +37,9 @@ function loginTokenRequest(token){
 
 function csrfRequest () {
   return {
-    type: types.CSRF_REQUEST,
+    type: types.CSRF_REQUEST
   }
 }
-
-
 
 function signupSuccess () {
   return {
@@ -68,7 +67,6 @@ function logoutSuccess () {
   }
 }
 
-
 function loginTokenSuccess (data) {
   console.log('what is data:loginSuccess', data)
   return {
@@ -85,7 +83,6 @@ function csrfSuccess (token) {
     token
   }
 }
-
 
 function signupFailure (message) {
   return {
@@ -119,19 +116,6 @@ function csrfError (message) {
   }
 }
 
-
-
-// Logs the user out
-export function logoutUser () {
-  console.log('attempting to log out')
-  return dispatch => {
-    dispatch(logoutRequest())
-    dispatch(removeJWT())
-    dispatch(logoutSuccess())
-  }
-}
-
-
 export function signup (credentials, csrfToken) {
   console.log('inside signup: what is credentials', credentials)
   console.log('inside signup: what is csrfToken', csrfToken)
@@ -152,19 +136,47 @@ export function signup (credentials, csrfToken) {
       console.log('what is signup res', res)
       return res.json()
     }).then(data => {
-      console.log('what is sign json data', data)
-      dispatch(signupSuccess())
-      dispatch(uiActions.toggleIsFetching(false))
-      dispatch(uiActions.toggleModal(false,'signup'))
-      dispatch(addJWT(data.token))
+      if (data.success) {
+        console.log('what is sign json data', data)
+        dispatch(signupSuccess())
+        dispatch(uiActions.toggleIsFetching(false))
+        dispatch(addJWT(data.token))
+        dispatch(uiActions.toggleModal(false, 'signup'))
+        dispatch(toastrActions.add({
+            id: 'signupSuccess',
+            type: 'success',
+            title: 'Successful created new user',
+            position: 'top-right', // This will override the global props position.
+            attention: true, // This will add a shadow like the confirm method.
+            options: {
+              timeOut: 2000
+            }
+          }
+        ))
+      }
+      else {
+        return Promise.reject(data)
+      }
+
     }).catch(err => {
       console.log('what is signup catch err', err)
-      dispatch(signupFailure(data.err))
+      dispatch(signupFailure(err.message))
       dispatch(uiActions.toggleIsFetching(false))
+      dispatch(toastrActions.add({
+          id: 'signupFailure',
+          type: 'failure',
+          title: 'Failed to create new user',
+          position: 'top-right', // This will override the global props position.
+          attention: true, // This will add a shadow like the confirm method.
+          message: err.message,
+          options: {
+            timeOut: 2000
+          }
+        }
+      ))
     })
   }
 }
-
 
 // Calls the API to get a token and
 // dispatches actions along the way
@@ -194,52 +206,98 @@ export function loginUser (credentials, csrfToken) {
       if (!res.ok) {
         // If there was a problem, we want to
         // dispatch the error condition
-        console.log('login error')
-        dispatch(loginFailure(data.message))
-        dispatch(uiActions.toggleIsFetching(false))
-        return Promise.reject(data.message)
+        // console.log('login error')
+
+        return Promise.reject(data)
       }
       else {
         // If login was successful, set the token in local storage
-        localStorage.setItem('token', data.token)
+        // localStorage.setItem('token', data.token)
         // Dispatch the success action
         dispatch(loginSuccess(data))
         dispatch(uiActions.toggleIsFetching(false))
         dispatch(addJWT(data.token))
-        dispatch(uiActions.toggleModal(false,'login'))
+        dispatch(uiActions.toggleModal(false, 'login'))
+        dispatch(toastrActions.add({
+            id: 'loginSuccess',
+            type: 'success',
+            title: 'Successfully Logged In',
+            position: 'top-right', // This will override the global props position.
+            attention: true, // This will add a shadow like the confirm method.
+            options: {
+              timeOut: 2000
+            }
+          }
+        ))
       }
-    }).catch(err => console.log('Error: ', err))
+    }).catch(err => {
+      console.log('what is err in catch for login error', err)
+      dispatch(loginFailure(err.message))
+      dispatch(uiActions.toggleIsFetching(false))
+      dispatch(toastrActions.add({
+          id: 'loginFailure',
+          type: 'failure',
+          title: 'Failed Logging In',
+          position: 'top-right', // This will override the global props position.
+          attention: true, // This will add a shadow like the confirm method.
+          message: err.message,
+          options: {
+            timeOut: 2000
+          }
+        }
+      ))
+    })
   }
 }
 
-export function loginToken(token){
+export function loginToken (token) {
   let config = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `JWT ${localStorage.getItem('token')}`
     }
   }
-  return dispatch=>{
+  return dispatch => {
     dispatch(loginTokenRequest())
-    fetch('/api/auth', config)
-    .then(res=>{
+    fetch('/api/auth', config).then(res => {
       console.log('TOKEN LOGIN WHAT IS RES', res)
-      if(res.ok){
+      if (res.ok) {
         return res.json()
-      } else {
+      }
+      else {
         return Promise.reject(new Error(res.statusText))
       }
-    })
-    .then(data=>{
+    }).then(data => {
       dispatch(loginTokenSuccess(data))
-    })
-    .catch(err=>{
+    }).catch(err => {
       dispatch(loginTokenFailure(err.message))
     })
   }
 
 }
+
+// Logs the user out
+export function logoutUser () {
+  console.log('attempting to log out')
+  return dispatch => {
+    dispatch(logoutRequest())
+    dispatch(removeJWT())
+    dispatch(logoutSuccess())
+    dispatch(toastrActions.add({
+        id: 'logoutSuccess',
+        type: 'success',
+        title: 'Successfully Logged Out',
+        position: 'top-right', // This will override the global props position.
+        attention: true, // This will add a shadow like the confirm method.
+        options: {
+          timeOut: 2000
+        }
+      }
+    ))
+  }
+}
+
 export function getCsrfToken () {
   let config = {
     method: 'GET'
@@ -251,7 +309,7 @@ export function getCsrfToken () {
   return dispatch => {
     console.log('trying CSRF REQUEST')
     dispatch(csrfRequest())
-    return fetch('/api/auth/signup', config).then(res => {
+    return fetch('/api/auth/csrf', config).then(res => {
       console.log('CSRF res', res)
       return res.json()
     }).then(data => {
@@ -263,7 +321,6 @@ export function getCsrfToken () {
     })
   }
 }
-
 
 export function addJWT (token) {
   localStorage.setItem('token', token)

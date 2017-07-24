@@ -1,9 +1,19 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
+const nodemailer = require('nodemailer')
+const util = require('util')
 
 module.exports = function (app) {
   const environment = app.getValue('environment')
 
+  const smtpTransport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: environment.EMAIL.user,
+      pass: environment.EMAIL.secret
+    }
+  })
+  const sendMailAsync = util.promisify(smtpTransport.sendMail)
   function signToken (id) {
     return jwt.sign(
       {_id: id},
@@ -20,6 +30,8 @@ module.exports = function (app) {
 
   return {
     signToken,
-    getApiHeaders
+    getApiHeaders,
+    smtpTransport,
+    sendMailAsync
   }
 }

@@ -21,7 +21,6 @@ const options = {
     PROTOCOL: 'mongodb',
     PORT: '27017',
     HOSTNAME: 'localhost'
-    // URI: getDomainUri.call(this)
   }),
   PUBLIC_PATH: '/',
   ASSET_LOCATION: '/client/src/assets',
@@ -30,12 +29,17 @@ const options = {
     secret: 'chulander engine chu',
     expiresIn: '2h'
   },
-  GENERAL:{
+  GENERAL: {
     secret: 'anything goes'
   },
-  QUOTE:{
-    apiKey:'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p'
+  QUOTE: {
+    apiKey: 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p',
+    url: 'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge'
   },
-  LOGGING: true,
+  EMAIL: {
+    secret: 'prhs svvx ndky kjax',
+    user: 'demo.env.only@gmail.com'
+  },
+  LOGGING: true
 }
 module.exports = options

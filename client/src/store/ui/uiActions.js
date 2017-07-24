@@ -3,14 +3,14 @@ import * as authActions from '../auth/authActions'
 
 
 export function toggleModal (modalActive, modalType, data) {
-  console.log('what is modalActive', modalActive)
-  console.log('what is modalType', modalType)
+  // console.log('what is modalActive', modalActive)
+  // console.log('what is modalType', modalType)
   return dispatch => {
     Promise.resolve().then(() => {
-      if (modalActive && (modalType === 'login' || modalType ==='signup')) {
-        console.log('trying to dispatch auth CSRF')
-        dispatch(authActions.getCsrfToken())
-      }
+      // if (modalActive && (modalType === 'login' || modalType ==='signup')) {
+      //   console.log('trying to dispatch auth CSRF')
+      //   dispatch(authActions.getCsrfToken())
+      // }
     }).then(() => {
       dispatch(function () {
         return {

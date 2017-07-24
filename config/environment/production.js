@@ -13,8 +13,9 @@ const options = {
   environment: 'production',
   web: CreateConfig({
     PROTOCOL: 'http',
-    PORT: '3000',
-    HOSTNAME: `${appName}.io`
+    PORT: '3001',
+    // HOSTNAME: `${appName}.io`
+    HOSTNAME:'localhost'
   }),
   database: CreateConfig({
     PROTOCOL: 'mongodb',
@@ -28,6 +29,17 @@ const options = {
   JWT: {
     secret: 'chulander engine chu',
     expiresIn: '2h'
+  },
+  GENERAL: {
+    secret: 'anything goes' // should be NODE_ENV variable
+  },
+  QUOTE: {
+    apiKey: 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p', // should be NODE_ENV variable
+    url: 'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge' // should be NODE_ENV variable
+  },
+  EMAIL: {
+    secret: 'prhs svvx ndky kjax', // should be NODE_ENV variable
+    user: 'demo.env.only@gmail.com'
   },
   LOGGING: true,
 }

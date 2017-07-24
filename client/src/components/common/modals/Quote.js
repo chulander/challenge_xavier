@@ -36,7 +36,8 @@ const initialState = {
   capacity: '',
   date: '',
   price: '',
-  email: ''
+  email: '',
+  checked:false
 }
 
 class Quote extends Component {
@@ -55,9 +56,13 @@ class Quote extends Component {
     this.setState({
       [name]: name === 'capacity'
         ? Number.parseInt(value)
-        : value
+        : name === 'price'
+          ? Number.parseFloat(value)
+          : value,
+      [`${name}Error`]: undefined
     })
   }
+
 
   resetQuoteForm () {
     this.setState(initialState)
@@ -76,79 +81,75 @@ class Quote extends Component {
 
   submitQuoteForm () {
     console.log('clicking submitQuoteForm')
-    const validFirstName = this.validateName(this.state.firstName)
-    const validSecondName = this.validateName(this.state.secondName)
+    this.setState({
+      checked:true
+    })
+    const validName = this.validateName(this.state.name)
+    const validLastName = this.validateName(this.state.lastName)
     const validModel = initialState.models.some(
       model => model.key === this.state.model)
     const validCapacity = Number.isInteger(this.state.capacity)
     const validDate = moment(this.state.date).isValid()
-    const validPrice = Number.parseFloat(this.state.price).toFixed(2)
+    const validPrice = typeof this.state.price === 'number'
     const validEmail = this.validateEmail(this.state.email)
 
-    const validSubmission = validFirstName && validSecondName && validModel &&
+    const validSubmission = validName && validLastName && validModel &&
       validCapacity &&
-      validDate && validPrice && validEmail
-    console.log('validFirstName', validFirstName)
-    console.log('validSecondName', validSecondName)
+      validDate && validEmail && validPrice
+    console.log('validName', validName)
+    console.log('validLastName', validLastName)
     console.log('validModel', validModel)
     console.log('validCapacity', validCapacity)
     console.log('validDate', validDate)
     console.log('validPrice', validPrice)
+    console.log('typeof validPrice', validPrice)
     console.log('validEmail', validEmail)
     // console.log('what is validTitle', validTitle)
     // console.log('what is validMessage', validMessage)
     // console.log('what is validSubmission', validSubmission)
-    if (validSubmission || true) {
+    if (validSubmission) {
       const submissionObj = {
-        owner_name: `${this.state.firstName} ${this.state.lastName}`,
+        owner_name: this.state.name,
         model: this.state.model,
         seat_capacity: this.state.capacity,
         manufactured_date: moment(this.state.date).toISOString(),
         purchase_price: this.state.price,
         broker_email: this.state.email
       }
-      const testObj = {
-        'owner_name': 'test test',
-        'model': 'CessnaA-37 Dragonfly',
-        'seat_capacity': 5,
-        'manufactured_date': '2017-04-01T04:00:00.000Z',
-        'purchase_price': 5000,
-        'broker_email': 'test@mail.com'
-      }
-      // const config = {
-      //   method: 'POST',
-      //   headers:
-      //     {
-      //       'x-api-key': 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p',
-      //       'Content-Type': 'application/json'
-      //     },
-      //   body: JSON.stringify(testObj)
+      // const testObj = {
+      //   'owner_name': 'bryan sur',
+      //   'model': 'CessnaA-37 Dragonfly',
+      //   'seat_capacity': 5,
+      //   'manufactured_date': '2017-04-01T04:00:00.000Z',
+      //   'purchase_price': 5000,
+      //   'broker_email': 'shino.sk@gmail.com'
       // }
-      // fetch(
-      //   'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge',
-      //   config).then(res => {
-      //   console.log('node-fetch: what is res', res)
-      //   if (res.ok) {
-      //     return res.json()
-      //   }
-      //   else {
-      //     return Promise.reject(new Error(res.errors))
-      //   }
-      // }).then(data => {
-      //   console.log('what is data', data)
-      //
-      // }).catch(err => {
-      //   console.log('frontend err', err)
-      // })
-      this.props.actions.createQuote(testObj)
+
+      this.props.actions.createQuote(submissionObj)
 
     }
     else {
-      const nameError = !validFirstName
-        ? 'Title must be at least two characters' : undefined
+      const nameError = !validName
+        ? 'Owner name must be at least two characters' : undefined
+      const emailError = !validEmail
+        ? 'Email is invalid' : undefined
+      const modelError = !validModel
+        ? 'A model is required to be selected' : undefined
+      const capacityError = !validCapacity
+        ? 'The seat capacity is required' : undefined
+      const dateError = !validDate
+        ? 'A valid date is required' : undefined
+
+      const priceError = !validPrice
+        ? 'A valid price is required' : undefined
 
       this.setState({
-        nameError
+        nameError,
+        emailError,
+        modelError,
+        capacityError,
+        dateError,
+        priceError
 
       })
     }
@@ -176,39 +177,27 @@ class Quote extends Component {
           <Form>
             <Form.Group widths='equal'>
               <Form.Field required>
-                <Input placeholder='Owner First Name'
-                       name='firstName'
+                <Input placeholder='Owner Name'
+                       name='name'
                        onChange={this.handleValueChange}
-                       value={this.state.firstName}
+                       value={this.state.name}
                 />
 
-                {this.state.firstNameError
+                {this.state.nameError
                   ? <Label basic color='red'
-                           pointing>{this.state.firstNameError}</Label>
-                  : undefined
-                }
-              </Form.Field>
-              <Form.Field required>
-                <Input placeholder='Owner Last Name'
-                       name='lastName'
-                       onChange={this.handleValueChange}
-                       value={this.state.lastName}
-                />
-
-                {this.state.lastNameError
-                  ? <Label basic color='red'
-                           pointing>{this.state.lastNameError}</Label>
+                           pointing>{this.state.nameError}</Label>
                   : undefined
                 }
               </Form.Field>
               <Form.Field required>
                 <Input placeholder='Broker Email'
                        name='email'
+                       type='email'
                        onChange={this.handleValueChange}
                        value={this.state.email}
                 />
 
-                {this.state.nameError
+                {this.state.emailError
                   ? <Label basic color='red'
                            pointing>{this.state.emailError}</Label>
                   : undefined
@@ -224,15 +213,21 @@ class Quote extends Component {
                         fluid
                         selection
                 />
+                {this.state.modelError
+                  ? <Label basic color='red'
+                           pointing>{this.state.modelError}</Label>
+                  : undefined
+                }
               </Form.Field>
               <Form.Field required>
                 <Input placeholder='Manufactured Date'
                        name='date'
+                       type='date'
                        onChange={this.handleValueChange}
                        value={this.state.date}
                 />
 
-                {this.state.nameError
+                {this.state.dateError
                   ? <Label basic color='red'
                            pointing>{this.state.dateError}</Label>
                   : undefined
@@ -244,6 +239,8 @@ class Quote extends Component {
               <Form.Field required>
                 <Input placeholder='Seat Capacity'
                        name='capacity'
+                       type='number'
+                       min='0'
                        onChange={this.handleValueChange}
                        value={this.state.capacity}
                 />
@@ -259,11 +256,15 @@ class Quote extends Component {
               <Form.Field required>
                 <Input placeholder='Purchase Price'
                        name='price'
+                       type='number'
+                       min='0.01'
+                       step='0.01'
+                       max='99999999999'
                        onChange={this.handleValueChange}
                        value={this.state.price}
                 />
 
-                {this.state.nameError
+                {this.state.priceError
                   ? <Label basic color='red'
                            pointing>{this.state.priceError}</Label>
                   : undefined

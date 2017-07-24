@@ -5,37 +5,47 @@ const schema = new mongoose.Schema({
   owner_name: {
     type: String,
     trim: true,
-    required: true,
+    required: true
   },
   model: {
-    type:String,
-    enum:[
+    type: String,
+    enum: [
       'Gulfstream G650',
       'CessnaA-37 Dragonfly',
       'Cessna Citation Encore'
     ],
-    required:true
+    required: true
   },
-  seat_capacity:{
+  seat_capacity: {
     type: Number,
     required: true
   },
-  manufactured_date:{
+  manufactured_date: {
     type: Date,
-    required:true
+    required: true
   },
-  purchase_price:{
-    type:Number,
-    required:true
+  purchase_price: {
+    type: Number,
+    required: true
   },
-  broker_email:{
-    type:String,
-    required:true,
+  broker_email: {
+    type: String,
+    required: true,
     validate: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
   },
-  annual_premium:{
-    type:Number
+  annual_premium: {
+    type: Number
   },
+  eligible: {
+    type: Boolean,
+    required: true
+  },
+  declined_reasons:[{
+    type: {
+      type: String
+    },
+    reasons: [String]
+  }],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

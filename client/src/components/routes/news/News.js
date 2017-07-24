@@ -128,7 +128,6 @@ class News extends Component {
         return Promise.reject(new Error(res.statusText))
       }
     }).then(data => {
-      console.log('what is blogs', data)
       this.setState({blogs: data.blogs})
     }).catch(err => {
       console.log('News: what is error', err)

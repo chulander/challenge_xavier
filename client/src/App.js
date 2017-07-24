@@ -1,10 +1,9 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 
 import AppContainer from './components/app/AppContainer'
 import configureStore from './store/configureStore'
-import { Provider } from 'react-redux'
 
-// const store = configureStore()
 const App = ({history, initialState, socket}) => {
   return (
     <Provider store={configureStore(history, initialState)}>

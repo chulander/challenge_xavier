@@ -7,7 +7,7 @@ const authenticate = require('./authenticate')
 const utility = require('./utility')
 const webpack_middleware = require('./webpack')
 // const helmet = require('./helmet')
-const route = require('./route')
+const routes = require('./routes')
 module.exports = function (config) {
   const app = express()
   // setValue and getValue are merely alias
@@ -26,7 +26,7 @@ module.exports = function (config) {
   // helmet(app)
   authenticate(app)
   controller(app)
-  route(app)
+  routes(app)
   webpack_middleware(app)
 
   return app
