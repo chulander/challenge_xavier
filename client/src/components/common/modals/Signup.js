@@ -115,7 +115,7 @@ class Signup extends Component {
 
   componentWillReceiveProps(){
     console.log('signup receiving props')
-    this.props.actions.getCsrfToken()
+    // this.props.actions.getCsrfToken()
   }
   render () {
     return (

@@ -13,7 +13,7 @@ module.exports = function (app) {
     User.findOne({
       email: req.body.email
     }).exec().then(user => {
-      return user.correctPassword(req.body.password)
+      return user && user.correctPassword(req.body.password)
         ? user
         : Promise.reject(new Error({
           message: 'Credentials are invalid'
@@ -24,6 +24,9 @@ module.exports = function (app) {
         token: utility.security.signToken(validUser.id)
       })
     }).catch(err => {
+      console.log('login error', err)
+      console.log('login error:message', err.message)
+
       res.status(401)
       res.json({
         message: err.message
@@ -51,7 +54,7 @@ module.exports = function (app) {
       })
     }).catch(err => {
       console.log('signup error', err)
-      res.status(202)
+      res.status(401)
       res.json({
         error: err.message
       })

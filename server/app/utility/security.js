@@ -23,14 +23,14 @@ module.exports = function (app) {
     })
   }
   function encodeBase64(value){
-    const cipher = crypto.createCipher('aes192', environment.GENERAL.secret)
-    let encrypted = cipher.update(value, 'utf-8', 'base64')
-    encrypted+=cipher.final('base64')
+    const cipher = crypto.createCipher('aes-256-ctr', environment.GENERAL.secret)
+    let encrypted = cipher.update(value, 'utf-8', 'binary')
+    encrypted+=cipher.final('binary')
     return encrypted
   }
   function decodeBase64(value){
     const decipher = crypto.createDecipher('aes192', environment.GENERAL.secret)
-    let decrypted = decipher.update(value, 'hex', 'utf-8')
+    let decrypted = decipher.update(value, 'binary', 'utf-8')
     decrypted += decipher.final('utf-8')
     return decrypted
   }

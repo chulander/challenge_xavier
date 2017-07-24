@@ -30,6 +30,9 @@ const options = {
     secret: 'chulander engine chu',
     expiresIn: '2h'
   },
+  GENERAL:{
+    secret: 'anything goes'
+  },
   LOGGING: true,
 }
 module.exports = options

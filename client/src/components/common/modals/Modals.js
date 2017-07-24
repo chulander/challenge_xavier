@@ -1,25 +1,21 @@
 import React from 'react'
 import { Dimmer, Loader } from 'semantic-ui-react'
-import CreateGroup from './CreateGroup'
-import CreatePlayer from './CreatePlayer'
-import CreateGame from './CreateGame'
 import Signup from './Signup'
+import Blog from './Blog'
 
 import Login from './Login'
 const modalMappings = {
   login: Login,
   signup: Signup,
-  createPlayer: CreatePlayer,
-  createGroup: CreateGroup,
-  createGame: CreateGame
+  blog: Blog,
 }
 const Modals = (props) => {
   const Component = modalMappings[props.ui.modalType]
 
   return (
-    <Dimmer active={props.auth.isFetching}>
+    <Dimmer active={props.ui.isFetching}>
 
-      {!props.auth.isFetching
+      {!props.ui.isFetching
         ? <Component{...props} />
         : undefined
       }

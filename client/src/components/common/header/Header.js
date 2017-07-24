@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Icon, Menu, Button, Input, Image, Header, Segment} from 'semantic-ui-react'
 const routeMappings = {
   home: '/',
-  group: '/groups',
+  blog: '/blog',
   game: '/games',
   user: '/players',
   news: '/news'
@@ -40,18 +40,11 @@ class HeaderContainer extends Component {
   render () {
     // console.log('what is header props', this.props.location.pathname)
     const {activeItem} = this.state
-    console.log('what is activeItem', activeItem)
+    // console.log('what is activeItem', activeItem)
     return (
       <div>
         <Header textAlign='center'>
           XYZ Insurance Inc.
-          {
-            this.props.isAuthenticated
-            ?  `...${this.props.user}`
-              :undefined
-          }
-
-
           <Header.Subheader>
             Xavier, an online "quick quoting" system
           </Header.Subheader>
@@ -74,22 +67,22 @@ class HeaderContainer extends Component {
             <Icon name='newspaper' />
             News
           </Menu.Item>
-          <Menu.Item name='group' active={activeItem === 'group'}
-                     onClick={this.handleItemClick}>
-            <Icon name='group' />
-            Groups
-          </Menu.Item>
 
-          <Menu.Item name='user' active={activeItem === 'user'}
-                     onClick={this.handleItemClick}>
-            <Icon name='user' />
-            Players
-          </Menu.Item>
+          {
+            this.props.isAuthenticated
+            ?  <Menu.Item name='blog' active={activeItem === 'blog'}
+                          onClick={()=>this.props.actions.toggleModal(!this.props.ui.modalActive,'blog')}>
+                <Icon name='plus' />
+                Create News Post
+              </Menu.Item>
+              : undefined
+          }
+
 
           <Menu.Menu position='right'>
             {this.props.isAuthenticated
               ? <Menu.Item name='logout' active={activeItem === 'logout'}
-                           onClick={this.handleItemClick}>
+                           onClick={this.props.actions.logoutUser}>
                 {/*<Image avatar size="mini" src={this.props.photo} />*/}
 
                 <Icon name='log out' />

@@ -4,13 +4,12 @@ import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 // import * as drawerActions from '../common/drawer/drawerActions'
 import * as authActions from '../../store/auth/authActions'
-import * as groupActions from '../../store/group/groupActions'
-import * as playerActions from '../../store/player/playerActions'
+import * as blogActions from '../../store/blog/blogActions'
 import * as uiActions from '../../store/ui/uiActions'
 import App from './App'
 // import * as dialogActions from '../common/dialog/dialogActions'
 
-const action = Object.assign({}, authActions, playerActions, uiActions, groupActions, toastrActions)
+const action = Object.assign({}, authActions, uiActions, blogActions, toastrActions)
 function mapStateToProps (state, ownProps) {
   // console.log('AppContainer: what is state inside mapstatetoprops', state)
   return {
@@ -22,11 +21,7 @@ function mapStateToProps (state, ownProps) {
     // drawerComponentId: state.drawer.drawerComponentId,
     isAuthenticated: state.auth.isAuthenticated,
     auth: state.auth,
-    user: state.auth.user,
-    photo: state.auth.photo,
     ui: state.ui,
-    group: state.group,
-    player: state.player,
     // errorMessage: state.auth.errorMessage
   }
 }

@@ -9,7 +9,6 @@ import * as uiActions from '../ui/uiActions'
 export function signUpRequest () {
   return {
     type: types.SIGNUP_REQUEST,
-    isFetching: true,
     isAuthenticated: false
   }
 }
@@ -17,7 +16,6 @@ export function signUpRequest () {
 export function signUpSuccess () {
   return {
     type: types.SIGNUP_SUCCESSS,
-    isFetching: false,
     isAuthenticated: true
   }
 }
@@ -25,7 +23,6 @@ export function signUpSuccess () {
 export function signUpError (message) {
   return {
     type: types.SIGNUP_FAILURE,
-    isFetching: false,
     isAuthenticated: false,
     signUpError: message
   }
@@ -48,6 +45,7 @@ export function signup (credentials, csrfToken) {
   }
   return dispatch => {
     dispatch(signUpRequest())
+    dispatch(uiActions.toggleIsFetching(true))
 
     fetch('/api/auth/signup', config).then(res => {
       console.log('what is signup res', res)
@@ -55,10 +53,13 @@ export function signup (credentials, csrfToken) {
     }).then(data => {
       console.log('what is sign json data', data)
       dispatch(signUpSuccess())
+      dispatch(uiActions.toggleIsFetching(false))
+      dispatch(uiActions.toggleModal(false,'signup'))
       dispatch(addJWT(data.token))
     }).catch(err => {
       console.log('what is signup catch err', err)
       dispatch(signUpError(data.err))
+      dispatch(uiActions.toggleIsFetching(false))
     })
   }
 }
@@ -66,7 +67,6 @@ export function signup (credentials, csrfToken) {
 function requestLogin () {
   return {
     type: types.LOGIN_REQUEST,
-    isFetching: true,
     isAuthenticated: false,
   }
 }
@@ -75,7 +75,6 @@ function receiveLogin (data) {
   console.log('what is data:receiveLogin', data)
   return {
     type: types.LOGIN_SUCCESS,
-    isFetching: false,
     isAuthenticated: true,
     user: data.firstName,
     token: data.token
@@ -85,7 +84,6 @@ function receiveLogin (data) {
 function loginError (message) {
   return {
     type: types.LOGIN_FAILURE,
-    isFetching: false,
     isAuthenticated: false,
     message
   }
@@ -94,7 +92,6 @@ function loginError (message) {
 function requestLogout () {
   return {
     type: types.LOGOUT_REQUEST,
-    isFetching: true,
     isAuthenticated: true
   }
 }
@@ -102,16 +99,16 @@ function requestLogout () {
 function receiveLogout () {
   return {
     type: types.LOGOUT_SUCCESS,
-    isFetching: false,
     isAuthenticated: false
   }
 }
 
 // Logs the user out
 export function logoutUser () {
+  console.log('attempting to log out')
   return dispatch => {
     dispatch(requestLogout())
-    localStorage.removeItem('token')
+    dispatch(removeJWT())
     dispatch(receiveLogout())
   }
 }
@@ -119,7 +116,6 @@ export function logoutUser () {
 export function loginToken (data) {
   return {
     type: types.LOGIN_SUCCESS,
-    isFetching: false,
     isAuthenticated: true,
     token: data.token
   }
@@ -142,6 +138,7 @@ export function loginUser (credentials, csrfToken) {
   return dispatch => {
     // We dispatch requestLogin to kickoff the call to the API
     dispatch(requestLogin(credentials))
+    dispatch(uiActions.toggleIsFetching(true))
 
     return fetch('/api/auth/login', config).then(res => {
       // return response.json().then(user => ({user, response}))
@@ -155,6 +152,7 @@ export function loginUser (credentials, csrfToken) {
         // dispatch the error condition
         console.log('login error')
         dispatch(loginError(data.message))
+        dispatch(uiActions.toggleIsFetching(false))
         return Promise.reject(data.message)
       }
       else {
@@ -162,6 +160,7 @@ export function loginUser (credentials, csrfToken) {
         localStorage.setItem('token', data.token)
         // Dispatch the success action
         dispatch(receiveLogin(data))
+        dispatch(uiActions.toggleIsFetching(false))
         dispatch(addJWT(data.token))
         dispatch(uiActions.toggleModal(false,'login'))
       }
@@ -225,7 +224,7 @@ export function addJWT (token) {
 }
 
 export function removeJWT () {
-  localStorage.remove('token')
+  localStorage.removeItem('token')
   return {
     type: types.JWT_REMOVE,
     jwtToken: false
