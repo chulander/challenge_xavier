@@ -112,35 +112,35 @@ class Quote extends Component {
         'model': 'CessnaA-37 Dragonfly',
         'seat_capacity': 5,
         'manufactured_date': '2017-04-01T04:00:00.000Z',
-        'purchase_price': '5000',
+        'purchase_price': 5000,
         'broker_email': 'test@mail.com'
       }
-      const config = {
-        method: 'POST',
-        headers:
-          {
-            'x-api-key': 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p',
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify(testObj)
-      }
-      fetch(
-        'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge',
-        config).then(res => {
-        console.log('node-fetch: what is res', res)
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          return Promise.reject(new Error(res.errors))
-        }
-      }).then(data => {
-        console.log('what is data', data)
-
-      }).catch(err => {
-        console.log('frontend err', err)
-      })
-      // this.props.actions.createQuote(submissionObj)
+      // const config = {
+      //   method: 'POST',
+      //   headers:
+      //     {
+      //       'x-api-key': 'L0Q3GvXCwB9jVSmvaJbw5augw4xHCvMy4Egqim2p',
+      //       'Content-Type': 'application/json'
+      //     },
+      //   body: JSON.stringify(testObj)
+      // }
+      // fetch(
+      //   'https://j950rrlta9.execute-api.us-east-2.amazonaws.com/v1/ArgoChallenge',
+      //   config).then(res => {
+      //   console.log('node-fetch: what is res', res)
+      //   if (res.ok) {
+      //     return res.json()
+      //   }
+      //   else {
+      //     return Promise.reject(new Error(res.errors))
+      //   }
+      // }).then(data => {
+      //   console.log('what is data', data)
+      //
+      // }).catch(err => {
+      //   console.log('frontend err', err)
+      // })
+      this.props.actions.createQuote(testObj)
 
     }
     else {

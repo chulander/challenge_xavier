@@ -6,7 +6,7 @@ module.exports = function (app) {
 
   const utility = app.getValue('utility')
   blogRouter.get('/', function (req, res) {
-    console.log('what is res.io', res.io)
+    // console.log('what is res.io', res.io)
     console.log('inside blog getting')
     Blog.find({}).exec().then(blogs => {
       console.log('what is blogs', blogs)
