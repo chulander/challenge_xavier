@@ -9,7 +9,7 @@ const initialState = {
 }
 export default function ui (state = initialState, action) {
   // console.log('what is action.modalActive', action.modalActive)
-  console.log('what is action.data', action.data)
+  // console.log('what is action.data', action.data)
   switch (action.type) {
     case types.TOGGLE_MODAL:
       return Object.assign({}, state, {

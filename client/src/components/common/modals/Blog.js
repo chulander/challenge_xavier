@@ -54,7 +54,7 @@ class Blog extends Component {
   }
 
   submitBlogForm () {
-    console.log('clicking submitBlogForm')
+    // console.log('clicking submitBlogForm')
     const validTitle = this.validateTitle(this.state.title)
     const validMessage = this.validateTitle(this.state.message)
     const validSubmission = validTitle && validMessage

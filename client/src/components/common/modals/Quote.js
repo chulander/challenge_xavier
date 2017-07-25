@@ -75,7 +75,6 @@ class Quote extends Component {
   }
 
   submitQuoteForm () {
-    console.log('clicking submitQuoteForm')
     this.setState({
       checked: true
     })
@@ -90,13 +89,13 @@ class Quote extends Component {
     const validSubmission = validName  && validModel &&
       validCapacity &&
       validDate && validEmail && validPrice
-    console.log('validName', validName)
-    console.log('validModel', validModel)
-    console.log('validCapacity', validCapacity)
-    console.log('validDate', validDate)
-    console.log('validPrice', validPrice)
-    console.log('typeof validPrice', validPrice)
-    console.log('validEmail', validEmail)
+    // console.log('validName', validName)
+    // console.log('validModel', validModel)
+    // console.log('validCapacity', validCapacity)
+    // console.log('validDate', validDate)
+    // console.log('validPrice', validPrice)
+    // console.log('typeof validPrice', validPrice)
+    // console.log('validEmail', validEmail)
     if (validSubmission) {
       const submissionObj = {
         owner_name: this.state.name,
@@ -148,6 +147,8 @@ class Quote extends Component {
       <Modal
         open={this.props.ui.modalActive}
         onClose={this.resetQuoteForm}
+        closeOnEscape={false}
+        closeOnRootNodeClick={false}
         basic
         size='small'
       >

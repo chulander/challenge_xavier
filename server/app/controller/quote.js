@@ -11,7 +11,7 @@ module.exports = function (app) {
     const config = {
       method: 'POST',
       headers: apiHeaders,
-      url: environment.QUOTE.url,
+      url: environment.QUOTE.url
     }
 
     console.log('what is req.body', req.body)
@@ -35,24 +35,10 @@ module.exports = function (app) {
       })
 
       if (jsonData.ok) {
-        quoteObj['annual_premium'] = +Number.parseFloat(
-          jsonData.data.annual_premium).
-        toFixed(2)
+        quoteObj['annual_premium'] = +Number.parseFloat(jsonData.data.annual_premium).toFixed(2)
         quoteObj['eligible'] = true
       }
       else {
-        console.log('what is JsonData', jsonData)
-
-        // console.log('jsondata keys', Object.keys(jsonData))
-        console.log('jsonData.name', jsonData.name)
-        console.log('jsonData.statusCode',jsonData.statusCode )
-        console.log('jsonData.message',jsonData.message)
-        console.log('jsonData.error',jsonData.error )
-        console.log('jsonData.options',jsonData.options )
-        console.log('jsonData.response',jsonData.response )
-        // console.log('jsondata.error', jsonData.error)
-        // console.log('what is JSON.parse(JsonData)', JSON.parse(jsonData))
-
         quoteObj['eligible'] = false
         quoteObj['declined_reasons'] = jsonData.errors || jsonData.error.errors
       }
@@ -61,32 +47,36 @@ module.exports = function (app) {
         quoteObj['declined_reasons'])
       return new Quote(quoteObj).save()
     }).then(createdQuote => {
-      if(createdQuote.eligible){
+      if (createdQuote.eligible) {
         const emailOptions = {  // email options
           from: environment.EMAIL.user,
           to: createdQuote.broker_email, // receiver
           subject: `Xavier Quote Confirmation`, // subject
-          text: `Hi ${createdQuote.owner_name}. 
+          text: `Hi ${createdQuote.owner_name}, 
           
-          This is a confirmation of the ${numeral(createdQuote.annual_premium).format('$0,0.00')} quote to cover the follow Jet per annum: 
+          This is a confirmation of the ${numeral(createdQuote.annual_premium).
+          format('$0,0.00')} quote to cover the follow Jet per annum: 
           
         Model: ${createdQuote.model},
         Seat Capacity: ${createdQuote.seat_capacity},
-        Manufactured Date: ${moment(createdQuote.manufactured_date).format('MMMM Do YYYY')},
-        Purchase Price: ${numeral(createdQuote.purchase_price).format('$0,0.00')}
+        Manufactured Date: ${moment(createdQuote.manufactured_date).
+          format('MMMM Do YYYY')},
+        Purchase Price: ${numeral(createdQuote.purchase_price).
+          format('$0,0.00')}
         ` // body
         }
-        utility.security.smtpTransport.sendMail(emailOptions, (err, response) => {
-          if (err) {
-            console.log('nodemailer error', err)
-          }
-          else {
-            console.log('Message sent: ' + response)
-            res.send({response})
-          }
+        utility.security.smtpTransport.sendMail(emailOptions,
+          (err, response) => {
+            if (err) {
+              console.log('nodemailer error', err)
+            }
+            else {
+              console.log('Message sent: ' + response)
+              res.send({response})
+            }
 
-          utility.security.smtpTransport.close()
-        })
+            utility.security.smtpTransport.close()
+          })
       }
 
       res.status(200)
@@ -95,7 +85,8 @@ module.exports = function (app) {
         quote: createdQuote,
         success: true,
         message: createdQuote.eligible
-          ? `Annual Premium is ${createdQuote.annual_premium}`
+          ? `Annual Premium is ${numeral(createdQuote.annual_premium).
+          format('$0,0.00')}`
           : `Not Eligible for Coverage`
       })
 

@@ -12,7 +12,6 @@ module.exports = function (app) {
   }
 
   const strategy = new JwtStrategy(jwtOptions, function (jwtPayload, next) {
-    console.log('payload received', jwtPayload)
     UserModel.findById(jwtPayload._id).exec().then(user => user
       ? next(null, user)
       : Promise.reject()

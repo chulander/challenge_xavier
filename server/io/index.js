@@ -9,7 +9,7 @@ module.exports = function (server) {
       socket.leave(data.room)
     })
     socket.on('disconnect', () => {
-      console.log('user disconnected')
+      // console.log('user disconnected')
     })
 
   })

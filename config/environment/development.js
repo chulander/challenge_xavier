@@ -40,6 +40,9 @@ const options = {
     secret: 'prhs svvx ndky kjax',
     user: 'demo.env.only@gmail.com'
   },
+  BATCH:{
+    interval: 60000
+  },
   LOGGING: true
 }
 module.exports = options

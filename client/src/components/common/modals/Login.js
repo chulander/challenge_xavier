@@ -27,7 +27,6 @@ class Login extends Component {
   }
 
   handlePasswordChange (e, {value}) {
-    console.log('handlePasswordChange value', value)
     this.setState({
       password: value
     })

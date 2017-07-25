@@ -6,9 +6,9 @@ module.exports = function (app) {
   const utility = app.getValue('utility')
 
   const getBlogs = function(req,res){
-    console.log('inside blog getting')
+
     Blog.find({}).exec().then(blogs => {
-      console.log('what is blogs', blogs)
+
       res.status(200)
       res.json({
         blogs

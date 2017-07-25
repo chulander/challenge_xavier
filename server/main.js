@@ -25,13 +25,13 @@ module.exports = function (config) {
     // const PORT = process.env.PORT || env ==='production' ? 5000 : 3000;
 
     server.listen(configuredApp.getValue('environment').web.PORT, function () {
-      console.log('Server started on port',
+      console.info('Server started on port',
         configuredApp.getValue('environment').web.PORT)
     })
 
   }
   db.then(startServer).catch(err => {
-    console.log('what is start err', err)
+    console.error('what is start err', err)
     process.kill(1)
   })
 

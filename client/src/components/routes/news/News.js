@@ -1,14 +1,5 @@
 import React, { Component } from 'react'
-import {
-  Container,
-  Header,
-  Grid,
-  Image,
-  Card,
-  Button,
-  Icon,
-  Input
-} from 'semantic-ui-react'
+import { Button, Card, Container, Grid, Header, Input } from 'semantic-ui-react'
 
 class NewsItem extends Component {
 
@@ -114,14 +105,12 @@ class News extends Component {
   }
 
   componentDidMount () {
-    console.log('News Component Mounting')
     fetch('/api/blog', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     }).then(res => {
-      console.log('what is res', res)
       if (res.ok) {
         return res.json()
       }
@@ -131,7 +120,7 @@ class News extends Component {
     }).then(data => {
       this.setState({blogs: data.blogs})
     }).catch(err => {
-      console.log('News: what is error', err)
+      // console.log('News: what is error', err)
     })
     this.props.socket.emit('enter room', {
       room: 'news'
@@ -139,8 +128,6 @@ class News extends Component {
   }
 
   render () {
-    console.log('what is this.state.blogs', this.state.blogs)
-    console.log('what is this.props.actions', this.props.actions)
     return (
       <Grid divided='vertically'>
         <Grid.Row columns={1}>

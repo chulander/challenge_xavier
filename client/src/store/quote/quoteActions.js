@@ -43,7 +43,6 @@ export function createQuote (quoteData) {
       headers: authHeaders,
       body: JSON.stringify(quoteData)
     }).then(res => {
-      console.log('what is res', res)
       if(res.ok) {
         return res.json()
       }
@@ -51,12 +50,11 @@ export function createQuote (quoteData) {
         return Promise.reject(new Error(res.statusText))
       }
     }).then(data => {
-      console.log('what is data', data)
+      // console.log('what is data', data)
       dispatch(createQuoteSuccess(data.message))
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(uiActions.toggleModal(false,'quote'))
       const quoteStatus = data.quote.eligible ? 'success' : 'error'
-      console.log('what is quoteStatus', quoteStatus)
       const toastrConfig = {
           id:`createQuote${quoteStatus}`,
         type: quoteStatus,
@@ -70,7 +68,6 @@ export function createQuote (quoteData) {
       }
       dispatch(toastrActions.add(toastrConfig))
     }).catch(err => {
-      console.log('what is err', err)
       dispatch(createQuoteFailure(err.message))
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(toastrActions.add({

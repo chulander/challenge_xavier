@@ -81,7 +81,6 @@ export function createBlog (blogData) {
       headers: authHeaders,
       body: JSON.stringify(blogData)
     }).then(res => {
-      console.log('what is res', res)
       if(res.ok) {
         return res.json()
       }
@@ -89,12 +88,10 @@ export function createBlog (blogData) {
         return Promise.reject(new Error(res.statusText))
       }
     }).then(data => {
-      console.log('what is data', data)
       dispatch(createBlogSuccess(data.message))
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(uiActions.toggleModal(false,'blog'))
     }).catch(err => {
-      console.log('what is err', err)
       dispatch(createBlogFailure(err.message))
       dispatch(uiActions.toggleIsFetching(false))
     })
@@ -102,8 +99,6 @@ export function createBlog (blogData) {
 }
 
 export function deleteBlog (blogData) {
-  console.log('inside deleteBlog action')
-  console.log('deleteBlog, what is blogData', blogData)
   const authHeaders = createAuthorizationHeader()
   return dispatch => {
     dispatch(deleteBlogRequest(blogData))
@@ -113,7 +108,6 @@ export function deleteBlog (blogData) {
       method: 'DELETE',
       headers: authHeaders,
     }).then(res => {
-      console.log('what is res', res)
       if(res.ok) {
         return res.json()
       }
@@ -121,12 +115,10 @@ export function deleteBlog (blogData) {
         return Promise.reject(new Error(res.statusText))
       }
     }).then(data => {
-      console.log('what is data', data)
       dispatch(deleteBlogSuccess(data.message))
       // dispatch(uiActions.toggleIsFetching(false))
       // dispatch(uiActions.toggleModal(false,'blog'))
     }).catch(err => {
-      console.log('what is err', err)
       dispatch(deleteBlogFailure(err.message))
       // dispatch(uiActions.toggleIsFetching(false))
     })
@@ -145,7 +137,6 @@ export function updateBlog (blogData) {
       headers: authHeaders,
       body: JSON.stringify(blogData)
     }).then(res => {
-      console.log('what is res', res)
       if(res.ok) {
         return res.json()
       }
@@ -153,12 +144,10 @@ export function updateBlog (blogData) {
         return Promise.reject(new Error(res.statusText))
       }
     }).then(data => {
-      console.log('what is data', data)
       dispatch(updateBlogSuccess(data.message))
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(uiActions.toggleModal(false,'blog'))
     }).catch(err => {
-      console.log('what is err', err)
       dispatch(updateBlogFailure(err.message))
       dispatch(uiActions.toggleIsFetching(false))
     })
