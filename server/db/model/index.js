@@ -4,8 +4,4 @@
 require('./user')
 require('./blog')
 require('./quote')
-require('./batch')
-// require('./group')
-// require('./game')
-// require('./player')
 

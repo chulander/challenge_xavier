@@ -1,9 +1,6 @@
-const blogRouter = require('express').Router()
 const mongoose = require('mongoose')
-const passport = require('passport')
 const Blog = mongoose.model('Blog')
 module.exports = function (app) {
-  const utility = app.getValue('utility')
 
   const getBlogs = function(req,res){
 
@@ -18,8 +15,8 @@ module.exports = function (app) {
     })
   }
   const createBlog = function(req,res){
-    console.log('what is req.body', req.body)
-    console.log('what is req.user', req.user.id)
+    // console.log('what is req.body', req.body)
+    // console.log('what is req.user', req.user.id)
     const blog = new Blog(Object.assign({},
       req.body, {
         createdBy: req.user.id
@@ -50,9 +47,9 @@ module.exports = function (app) {
   const deleteBlog = function (req, res) {
     // const mongoId = utility.security.decodeBase64(req.params.blogId)
     const blogId = req.params.blogId
-    console.log('what is req.params.blogId', req.params.blogId)
-    console.log('what is req.body', req.body)
-    console.log('what is req.user', req.user.id)
+    // console.log('what is req.params.blogId', req.params.blogId)
+    // console.log('what is req.body', req.body)
+    // console.log('what is req.user', req.user.id)
     // Blog.findById(req.params.blogId).exec()
     Blog.remove({_id: blogId}).exec().then(() => {
       res.io.sockets.in('news').emit('delete blog', blogId)
@@ -70,9 +67,9 @@ module.exports = function (app) {
   const updateBlog =function (req, res) {
     // const mongoId = utility.security.decodeBase64(req.params.blogId)
     const blogId = req.params.blogId
-    console.log('what is req.params.blogId', req.params.blogId)
-    console.log('what is req.body', req.body)
-    console.log('what is req.user', req.user.id)
+    // console.log('what is req.params.blogId', req.params.blogId)
+    // console.log('what is req.body', req.body)
+    // console.log('what is req.user', req.user.id)
     // Blog.findById(req.params.blogId).exec()
     Blog.findByIdAndUpdate(blogId, req.body, {new: true}
     ).exec().then(updatedBlog => {

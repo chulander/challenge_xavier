@@ -8,7 +8,7 @@ module.exports = function (app) {
   const utility = app.getValue('utility')
 
   const loginUser = function (req, res) {
-    console.log('inside login post')
+    // console.log('inside login post')
     User.findOne({
       email: req.body.email
     }).exec().then(user => {
@@ -21,8 +21,8 @@ module.exports = function (app) {
         token: utility.security.signToken(validUser.id)
       })
     }).catch(err => {
-      console.log('login error', err)
-      console.log('login error:message', err.message)
+      // console.log('login error', err)
+      // console.log('login error:message', err.message)
 
       res.status(401)
       res.json({
