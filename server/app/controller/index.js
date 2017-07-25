@@ -8,7 +8,8 @@ module.exports = function (app) {
     // email: email(app),
     error: require('./error')(app),
     blog: require('./blog')(app),
-    auth: require('./auth')(app)
+    auth: require('./auth')(app),
+    quote:require('./quote')(app)
     // authenticate: authenticate(app)
   }
 

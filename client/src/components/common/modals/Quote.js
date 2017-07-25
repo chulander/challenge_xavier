@@ -36,7 +36,7 @@ const initialState = {
   date: '',
   price: '',
   email: '',
-  checked:false
+  checked: false
 }
 
 class Quote extends Component {
@@ -52,15 +52,12 @@ class Quote extends Component {
 
   handleValueChange (e, {value, name}) {
     this.setState({
-      [name]: name === 'capacity'
+      [name]: name === 'capacity' || name === 'price'
         ? Number.parseInt(value)
-        : name === 'price'
-          ? Number.parseFloat(value)
-          : value,
+        : value,
       [`${name}Error`]: undefined
     })
   }
-
 
   resetQuoteForm () {
     this.setState(initialState)
@@ -80,28 +77,26 @@ class Quote extends Component {
   submitQuoteForm () {
     console.log('clicking submitQuoteForm')
     this.setState({
-      checked:true
+      checked: true
     })
     const validName = this.validateName(this.state.name)
-    const validLastName = this.validateName(this.state.lastName)
     const validModel = initialState.models.some(
       model => model.key === this.state.model)
     const validCapacity = Number.isInteger(this.state.capacity)
     const validDate = moment(this.state.date).isValid()
-    const validPrice = typeof this.state.price === 'number'
+    const validPrice = Number.isInteger(this.state.price)
     const validEmail = this.validateEmail(this.state.email)
 
-    const validSubmission = validName && validLastName && validModel &&
+    const validSubmission = validName  && validModel &&
       validCapacity &&
       validDate && validEmail && validPrice
-    // console.log('validName', validName)
-    // console.log('validLastName', validLastName)
-    // console.log('validModel', validModel)
-    // console.log('validCapacity', validCapacity)
-    // console.log('validDate', validDate)
-    // console.log('validPrice', validPrice)
-    // console.log('typeof validPrice', validPrice)
-    // console.log('validEmail', validEmail)
+    console.log('validName', validName)
+    console.log('validModel', validModel)
+    console.log('validCapacity', validCapacity)
+    console.log('validDate', validDate)
+    console.log('validPrice', validPrice)
+    console.log('typeof validPrice', validPrice)
+    console.log('validEmail', validEmail)
     if (validSubmission) {
       const submissionObj = {
         owner_name: this.state.name,
@@ -189,7 +184,7 @@ class Quote extends Component {
               </Form.Field>
             </Form.Group>
             <Form.Group widths='equal'>
-              <Form.Field required>
+              <Form.Field>
                 <Select placeholder='Select Model'
                         options={this.state.models}
                         name='model'
@@ -241,8 +236,8 @@ class Quote extends Component {
                 <Input placeholder='Purchase Price'
                        name='price'
                        type='number'
-                       min='0.01'
-                       step='0.01'
+                       min='0.00'
+                       step='1'
                        max='99999999999'
                        onChange={this.handleValueChange}
                        value={this.state.price}

@@ -23,57 +23,6 @@ module.exports = function (app) {
   //   })
   // }
 
-  // authRouter.post('/login', function (req, res) {
-  //   console.log('inside login post')
-  //   User.findOne({
-  //     email: req.body.email
-  //   }).exec().then(user => {
-  //     return user && user.correctPassword(req.body.password)
-  //       ? user
-  //       : Promise.reject(new Error('Credentials are invalid'))
-  //   }).then(validUser => {
-  //     res.status(200)
-  //     res.json({
-  //       token: utility.security.signToken(validUser.id)
-  //     })
-  //   }).catch(err => {
-  //     console.log('login error', err)
-  //     console.log('login error:message', err.message)
-  //
-  //     res.status(401)
-  //     res.json({
-  //       message: err.message
-  //     })
-  //   })
-  // })
-
-  // authRouter.get('/signup', function (req, res) {
-  //   res.json({
-  //     // csrfToken: req.csrfToken()
-  //   })
-  // })
-  // authRouter.post('/signup', function (req, res) {
-  //   // console.log('what is req.body', req.body)
-  //   const user = new User(Object.assign({},
-  //     req.body, {
-  //       createdByIp: req.clientIp,
-  //       createdByUserAgent: useragent.parse(req.headers['user-agent']).source
-  //     }
-  //   ))
-  //   user.save().then(userData => {
-  //     res.status(201)
-  //     res.json({
-  //       token: utility.security.signToken(userData.id)
-  //     })
-  //   }).catch(err => {
-  //     console.log('signup error', err)
-  //     res.status(401)
-  //     res.json({
-  //       error: err.message
-  //     })
-  //   })
-  // })
-
 
   return authRouter
 }

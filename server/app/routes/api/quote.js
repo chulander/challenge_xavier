@@ -1,110 +1,12 @@
 const quoteRouter = require('express').Router()
-const mongoose = require('mongoose')
 const passport = require('passport')
-const Quote = mongoose.model('Quote')
-const request = require('request-promise-native')
+
 module.exports = function (app) {
-  const environment = app.getValue('environment')
-  const utility = app.getValue('utility')
-  // console.log('what is utility', utility)
-  const apiHeaders = utility.security.getApiHeaders()
-
-  quoteRouter.post('/', passport.authenticate('jwt', {session: false}),
-    function (req, res) {
-      const config = {
-        method: 'POST',
-        headers: apiHeaders,
-        url: environment.QUOTE.url
-      }
-
-      console.log('what is req.body', req.body)
-      console.log('what is req.user', req.user.id)
-      const updatedBody = Object.assign({},req.body,{
-        createdBy: req.user.id
-      })
-      config.body = JSON.stringify(updatedBody)
-      console.log('what is config', config)
-
-
-
-
-
-      request(config).then(res => {
-        res=JSON.parse(res)
-        console.log('node-fetch: what is res', res)
-
-        console.log('node-fetch: what is res.errors', res.errors)
-        const quoteObj = Object.assign({}, req.body, {
-            createdBy: req.user.id
-          })
-
-        // new Quote(quoteObj).save
-        if(res.ok){
-          quoteObj['annual_premium'] = res.data.annual_premium
-          quoteObj['eligible'] = true
-        } else {
-          quoteObj['eligible'] = false
-          quoteObj['declined_reasons'] = res.errors
-        }
-        console.log('what is quotesObj', quoteObj)
-        console.log('what is quotesObj[declined_reasons]', quoteObj['declined_reasons'])
-        return new Quote(quoteObj).save()
-      }).then(createdQuote => {
-        console.log('what is createdQuote', createdQuote)
-        const eligibility = createdQuote.eligible ? 'Eligible' : 'Ineligible'
-        const emailOptions = {  // email options
-          from: environment.EMAIL.user,
-          to: updatedBody.broker_email, // receiver
-          subject: `Xavier Quote Confirmation - ${eligibility}`, // subject
-          text: `Hi ${updatedBody.owner_name}. 
-          
-          This is a confirmation that your quote request has been received and the Jet is ${eligibility}. Please see the details of your quote below: 
-          
-        Model: ${updatedBody.model},
-        Seat Capacity: ${updatedBody.seat_capacity},
-        Manufactured Date: ${updatedBody.manufactured_date},
-        Purchase Price: ${updatedBody.purchase_price}` // body
-        }
-        utility.security.smtpTransport.sendMail(emailOptions, (err,response)=>{
-          if (err) {
-            console.log('nodemailer error', err);
-          } else {
-            console.log('Message sent: ' + response);
-            res.send({response})
-          }
-
-          utility.security.smtpTransport.close()
-        })
-
-        res.status(200)
-
-        res.json({
-          quote: createdQuote,
-          success: true,
-          message: createdQuote.eligible ? `Annual Premium is ${createdQuote.annual_premium}` : `Not Eligible for Coverage`
-        })
-        console.log('still running here?')
-      }).catch(err => {
-        console.log('quote error', err)
-        res.json({
-          message:`Error Creating Quote`
-        })
-        // new Quote(Object.assign({},
-        //   req.body, {
-        //     createdBy: req.user.id
-        //   })).save().then(newQuote => {
-        //   console.log('successfully created 2 error newQuote', newQuote)
-        //   res.json({
-        //     quote: {},
-        //     success: false,
-        //     message: `error getting quote`
-        //   })
-        // }).catch(err => {
-        //   console.log('what is promise catch error', err)
-        // })
-      })
-
-    })
+  const controller = app.getValue('controller')
+  quoteRouter.post('/',
+    passport.authenticate('jwt', {session: false}),
+    controller.quote.createQuote
+  )
 
   return quoteRouter
 }

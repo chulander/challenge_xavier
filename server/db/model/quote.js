@@ -44,7 +44,11 @@ const schema = new mongoose.Schema({
     type: {
       type: String
     },
-    reasons: [String]
+    reasons: [mongoose.Schema.Types.Mixed],
+    // fields: [{
+    //   name:String,
+    //   reason:String
+    // }]
   }],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
