@@ -11,4 +11,10 @@ npm start development
 ```
 3. production build isn't setup yet and it's running on webpack dev and hot middleware
 
+4. To run the shell scripts to get the stats, please run
+
+```javascript 1.8
+mongo < shell_stats.js
+``g
+
 
