@@ -15,6 +15,6 @@ npm start development
 
 ```javascript 1.8
 mongo < shell_stats.js
-``g
+```
 
 
