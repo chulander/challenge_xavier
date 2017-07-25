@@ -114,6 +114,7 @@ class News extends Component {
   }
 
   componentDidMount () {
+    console.log('News Component Mounting')
     fetch('/api/blog', {
       method: 'GET',
       headers: {

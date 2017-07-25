@@ -164,7 +164,7 @@ export function signup (credentials, csrfToken) {
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(toastrActions.add({
           id: 'signupFailure',
-          type: 'failure',
+          type: 'error',
           title: 'Failed to create new user',
           position: 'top-right', // This will override the global props position.
           attention: true, // This will add a shadow like the confirm method.

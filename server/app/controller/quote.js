@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const Quote = mongoose.model('Quote')
 const request = require('request-promise-native')
+const numeral = require('numeral')
+const moment = require('moment')
 module.exports = function (app) {
   const environment = app.getValue('environment')
   const utility = app.getValue('utility')
@@ -59,32 +61,33 @@ module.exports = function (app) {
         quoteObj['declined_reasons'])
       return new Quote(quoteObj).save()
     }).then(createdQuote => {
-      console.log('what is createdQuote', createdQuote)
-      const eligibility = createdQuote.eligible ? 'Eligible' : 'Ineligible'
-      const emailOptions = {  // email options
-        from: environment.EMAIL.user,
-        to: updatedBody.broker_email, // receiver
-        subject: `Xavier Quote Confirmation - ${eligibility}`, // subject
-        text: `Hi ${updatedBody.owner_name}. 
+      if(createdQuote.eligible){
+        const emailOptions = {  // email options
+          from: environment.EMAIL.user,
+          to: createdQuote.broker_email, // receiver
+          subject: `Xavier Quote Confirmation`, // subject
+          text: `Hi ${createdQuote.owner_name}. 
           
-          This is a confirmation that your quote request has been received and the Jet is ${eligibility}. Please see the details of your quote below: 
+          This is a confirmation of the ${numeral(createdQuote.annual_premium).format('$0,0.00')} quote to cover the follow Jet per annum: 
           
-        Model: ${updatedBody.model},
-        Seat Capacity: ${updatedBody.seat_capacity},
-        Manufactured Date: ${updatedBody.manufactured_date},
-        Purchase Price: ${updatedBody.purchase_price}` // body
-      }
-      utility.security.smtpTransport.sendMail(emailOptions, (err, response) => {
-        if (err) {
-          console.log('nodemailer error', err)
+        Model: ${createdQuote.model},
+        Seat Capacity: ${createdQuote.seat_capacity},
+        Manufactured Date: ${moment(createdQuote.manufactured_date).format('MMMM Do YYYY')},
+        Purchase Price: ${numeral(createdQuote.purchase_price).format('$0,0.00')}
+        ` // body
         }
-        else {
-          console.log('Message sent: ' + response)
-          res.send({response})
-        }
+        utility.security.smtpTransport.sendMail(emailOptions, (err, response) => {
+          if (err) {
+            console.log('nodemailer error', err)
+          }
+          else {
+            console.log('Message sent: ' + response)
+            res.send({response})
+          }
 
-        utility.security.smtpTransport.close()
-      })
+          utility.security.smtpTransport.close()
+        })
+      }
 
       res.status(200)
 
@@ -95,7 +98,7 @@ module.exports = function (app) {
           ? `Annual Premium is ${createdQuote.annual_premium}`
           : `Not Eligible for Coverage`
       })
-      console.log('still running here?')
+
     }).catch(err => {
       console.log('quote error', err)
       res.json({

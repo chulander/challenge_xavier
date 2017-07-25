@@ -55,12 +55,12 @@ export function createQuote (quoteData) {
       dispatch(createQuoteSuccess(data.message))
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(uiActions.toggleModal(false,'quote'))
-      const quoteStatus = data.quote.eligible ? 'success' : 'failure'
+      const quoteStatus = data.quote.eligible ? 'success' : 'error'
       console.log('what is quoteStatus', quoteStatus)
       const toastrConfig = {
           id:`createQuote${quoteStatus}`,
         type: quoteStatus,
-        title: quoteStatus,
+        title: quoteStatus.toUpperCase(),
         position: 'top-right', // This will override the global props position.
         attention: true, // This will add a shadow like the confirm method.
         message: data.message,
@@ -75,7 +75,7 @@ export function createQuote (quoteData) {
       dispatch(uiActions.toggleIsFetching(false))
       dispatch(toastrActions.add({
         id: 'createQuoteFailure', // If not provided we will add one.
-        type: 'failure',
+        type: 'error',
         title: 'Our system is experiencing routine maintenance, please try again later',
         position: 'top-right', // This will override the global props position.
         attention: true, // This will add a shadow like the confirm method.
