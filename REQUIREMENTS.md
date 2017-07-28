@@ -22,13 +22,15 @@ Xavier is the hottest thing on the market right now. The management team is supe
 #### TASK 3: Integrate the Amazing Quote API on the Xavier website. Guidelines:
 1. Create a new page on the Xavier website
 2. Create a form on the page with the following fields:
-a. “Owner Name” (string)
-b. “JetModel”(dropdown),options:GulfstreamG650,CessnaA-37
-Dragonfly, Cessna Citation Encore
-c. “Jet Seat Capacity” (number)
-d. “ManufacturingDate”(date)
-e. “Purchase Price” (double)
-f. “Broker Email” (email)
+    1. “Owner Name” (string)
+    2. “JetModel”(dropdown), options:
+       1. GulfstreamG650,
+       2. CessnaA-37 Dragonfly, 
+       3. Cessna Citation Encore
+    3. “Jet Seat Capacity” (number)
+    4. “Manufacturing Date”(date)
+    5. “Purchase Price” (double)
+    6. “Broker Email” (email)
 3. Make an HTTP POST call to the Amazing Quote API
 4. Show a loading animation while waiting for the quote
 5. Upon a successful quote receival, display it to the broker
