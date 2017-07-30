@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = function (app) {
+module.exports = function(app) {
   const controller = {
     error: require('./error')(app),
     blog: require('./blog')(app),

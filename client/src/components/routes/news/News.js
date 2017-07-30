@@ -1,3 +1,6 @@
+/*
+global fetch:false
+ */
 import React, { Component } from 'react'
 import { Button, Card, Container, Grid, Header, Input } from 'semantic-ui-react'
 

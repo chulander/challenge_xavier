@@ -77,10 +77,10 @@ function loginTokenSuccess (data) {
   }
 }
 
-function csrfSuccess (token) {
+function csrfSuccess (csrfToken) {
   return {
     type: types.CSRF_SUCCESS,
-    token
+    csrfToken
   }
 }
 
@@ -117,14 +117,18 @@ function csrfError (message) {
 }
 
 export function signup (credentials, csrfToken) {
-  // console.log('inside signup: what is credentials', credentials)
-  // console.log('inside signup: what is csrfToken', csrfToken)
-
+  console.log('inside signup: what is credentials', credentials)
+  console.log('inside signup: what is csrfToken', csrfToken)
+  const newPostBody = Object.assign({}, credentials,{
+    '_csrf': csrfToken
+  })
+  console.log('what is newPostBody', newPostBody)
   const config = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'csrf-token': csrfToken
+      credentials: 'include' // include the cookie or else
+      // 'x-csrf-token': csrfToken
     },
     body: JSON.stringify(credentials)
   }
@@ -304,8 +308,8 @@ export function getCsrfToken () {
   return dispatch => {
     // console.log('trying CSRF REQUEST')
     dispatch(csrfRequest())
-    return fetch('/api/auth/csrf', config).then(res => {
-      // console.log('CSRF res', res)
+    return fetch('/api/auth/getCsrfToken', config).then(res => {
+      console.log('CSRF res', res)
       return res.json()
     }).then(data => {
       // console.log('what is csrf data', data)

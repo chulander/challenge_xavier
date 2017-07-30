@@ -9,28 +9,26 @@ import Modals from '../common/modals/Modals'
 import Sidebar from '../common/sidebar/Sidebar'
 import News from '../routes/news/News'
 import Home from '../routes/home/Home'
+
 const FourOhFour = () => <h1>404</h1>
 export default class App extends Component {
-
-  componentDidMount () {
-
+  componentDidMount() {
     if (!this.props.isAuthenticated) {
       const token = localStorage.getItem('token')
-      if(token){
+      if (token) {
         this.props.actions.loginToken(token)
       }
-
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Sidebar {...this.props}>
           <Header {...this.props} />
           <Switch>
-            <Route exact path='/' render={() => <Home {...this.props} />} />
-            <Route path='/news' render={() => <News {...this.props} />} />
+            <Route exact path="/" render={() => <Home {...this.props} />} />
+            <Route path="/news" render={() => <News {...this.props} />} />
             <Route component={FourOhFour} />
           </Switch>
         </Sidebar>
@@ -41,7 +39,8 @@ export default class App extends Component {
           position="top-left"
           transitionIn="fadeIn"
           transitionOut="fadeOut"
-          progressBar />
+          progressBar
+        />
         <Modals {...this.props} />
       </div>
     )
